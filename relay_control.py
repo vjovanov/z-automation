@@ -13,14 +13,14 @@ import os
 GPIO.setmode(GPIO.BCM)
 
 RELAY_GPIO_MAP = {
-    0: 20,
-    1: 21,
-    2: 16,
-    3: 26,
-    4: 19,
-    5: 13,
-    6: 6,
-    7: 5,
+    0: 5,
+    1: 6,
+    2: 13,
+    3: 19,
+    4: 26,
+    5: 16,
+    6: 21,
+    7: 20,
 }
 
 for pin in RELAY_GPIO_MAP.values():
@@ -36,7 +36,6 @@ def main():
     path = sys.argv[1]
     time = 0
     while True:
-        print ("---")
         for relay in xrange(8):
             switch_state_file_path = path + os.sep + str(relay)
             content = ""
@@ -52,7 +51,7 @@ def main():
                     relay) + ": expected 0 or 1." + content + ". Keeping the previous state.\n")
 
             # setting the relay state according to switch states
-            assert switches[relay] == 0 || switches[relay] == 1
+            assert switches[relay] == 0 or switches[relay] == 1
             GPIO.output(RELAY_GPIO_MAP[relay], switches[relay])
 
         sleep(POLL_PERIOD_SECONDS)
