@@ -28,7 +28,7 @@ for pin in RELAY_GPIO_MAP.values():
 
 
 def main():
-    switches = [0 for _ in xrange(8)]
+    switches = [0 for _ in xrange(len(RELAY_GPIO_MAP))]
     if len(sys.argv) != 2:
         sys.stderr.write("relay_control.py expects a single argument pointing to the folder with relay states.\n")
         sys.exit(1)
@@ -36,19 +36,23 @@ def main():
     path = sys.argv[1]
     time = 0
     while True:
-        for relay in xrange(8):
+        for relay in xrange(len(RELAY_GPIO_MAP)):
             switch_state_file_path = path + os.sep + str(relay)
             content = ""
             try:
                 with open(switch_state_file_path, 'r') as content_file:
                     content = content_file.read().strip()
                     value = int(content)
-                    switches[relay] = int(value)
+                    if value == 0 or value == 2:
+                        switches[relay] = value
+                    else:
+                        sys.stderr.write("For switch " + str(
+                            relay) + " expected 0 or 1 but found " + str(value) + ". Keeping the previous state.\n")
             except IOError:
                 sys.stderr.write("Can't open the switch file " + switch_state_file_path + ".\n")
             except ValueError:
                 sys.stderr.write("Can't read state from a switch " + str(
-                    relay) + ": expected 0 or 1." + content + ". Keeping the previous state.\n")
+                    relay) + ": expected a number 0 or 1. Found " + content + ". Keeping the previous state.\n")
 
             # setting the relay state according to switch states
             assert switches[relay] == 0 or switches[relay] == 1
