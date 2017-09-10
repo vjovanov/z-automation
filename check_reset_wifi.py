@@ -54,7 +54,7 @@ def main():
                 all_failed = False
             except socket.error:
                 print("Can't connect to " + str(site_address_port))
-                print("Reason: " + str(socket.error))
+                print("Reason: " + str(socket.error.message))
             finally:
                 s.close()
 
