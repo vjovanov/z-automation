@@ -56,6 +56,11 @@ def main():
 
             # setting the relay state according to switch states
             assert switches[relay] == 0 or switches[relay] == 1
+
+            # make sure the pump is running if the heating is on
+            if (relay == 1 or relay == 2) and switches[relay] == 1:
+                assert switches[0] == 1;
+
             GPIO.output(RELAY_GPIO_MAP[relay], switches[relay])
 
         sleep(POLL_PERIOD_SECONDS)
