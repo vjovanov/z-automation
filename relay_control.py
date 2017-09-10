@@ -43,7 +43,7 @@ def main():
                 with open(switch_state_file_path, 'r') as content_file:
                     content = content_file.read().strip()
                     value = int(content)
-                    if value == 0 or value == 2:
+                    if value == 0 or value == 1:
                         switches[relay] = value
                     else:
                         sys.stderr.write("For switch " + str(
