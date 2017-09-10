@@ -23,8 +23,8 @@ RESET_FILES = [
     "/home/homeassistant/relays/6",
 ]
 RELIABLE_WEBSITES = [
-    ("http://www.google.com/", 80),
-    ("http://www.amazon.com/", 80),
+    ("www.google.com", 80),
+    ("www.amazon.com", 80),
 ]
 
 
@@ -49,12 +49,12 @@ def main():
         for site_address_port in RELIABLE_WEBSITES:
             s = socket.socket()
             s.bind((ip_address, 0))
+            print ip_address
             try:
                 s.connect(site_address_port)
                 all_failed = False
-            except socket.error:
-                print("Can't connect to " + str(site_address_port))
-                print("Reason: " + str(socket.error.message))
+            except socket.error as e:
+                print("Can't connect to " + str(site_address_port) ". Reason: " + str(e))
             finally:
                 s.close()
 
