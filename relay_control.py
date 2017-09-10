@@ -51,7 +51,7 @@ def main():
             except IOError:
                 sys.stderr.write("Can't open the switch file " + switch_state_file_path + ".\n")
             except ValueError:
-                sys.stderr.write("Can't read state from a switch " + str(
+                sys.stderr.write("Can't read state from the switch " + str(
                     relay) + ": expected a number 0 or 1. Found " + content + ". Keeping the previous state.\n")
 
             # setting the relay state according to switch states
