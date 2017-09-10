@@ -41,7 +41,7 @@ def reset_wifi():
 
 
 def main():
-    time = 0
+    time_period = 0
     last_failed = False
     while True:
         all_failed = True
@@ -54,19 +54,20 @@ def main():
                 all_failed = False
             except socket.error:
                 print("Can't connect to " + str(site_address_port))
+                print("Reason: " + str(socket.error))
             finally:
                 s.close()
 
-            if all_failed:
-                if last_failed:
-                    last_failed = False
-                    print("Resetting all routers and sensors: could not reach: " + str(site_address_port))
-                    reset_wifi()
-                else:
-                    last_failed = True
+        if all_failed:
+            if last_failed:
+                last_failed = False
+                print("Resetting all routers and sensors: could not reach: " + str(site_address_port))
+                reset_wifi()
+            else:
+                last_failed = True
 
         sleep(POLL_PERIOD_SECONDS)
-        time += 1
+        time_period += 1
 
 
 if __name__ == '__main__':
