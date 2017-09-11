@@ -11,7 +11,8 @@
 # /etc/init.d Service Script for Home Assistant
 # Created with: https://gist.github.com/naholyr/4275302#file-new-service-sh
 HASS_HOME="/home/homeassistant/"
-CODE_HOME="$HASS_HOME/z-automation/"
+PI_HOME="/home/pi/"
+CODE_HOME="$PI_HOME/z-automation/"
 RELAY_DIR="$HOME/relays"
 
 PRE_EXEC="python"
@@ -66,6 +67,7 @@ uninstall() {
   if [ "$SURE" = "yes" ]; then
     stop
     rm -fv "$PID_FILE"
+    rm -fv "$RELAY_DIR"
     echo "Notice: The config directory has not been removed"
     echo $CONFIG_DIR
     update-rc.d -f relay-control-daemon remove
