@@ -1,6 +1,6 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          hass
+# Provides:          relay control
 # Required-Start:    $local_fs $network $named $time $syslog
 # Required-Stop:     $local_fs $network $named $time $syslog
 # Default-Start:     2 3 4 5
@@ -12,15 +12,15 @@
 # Created with: https://gist.github.com/naholyr/4275302#file-new-service-sh
 HASS_HOME="/home/homeassistant/"
 CODE_HOME="$HASS_HOME/z-automation/"
+RELAY_DIR="$HOME/relays"
 
 PRE_EXEC="python"
 RUN_AS="homeassistant"
 CONFIG_DIR="/var/opt/relay-control"
 PID_FILE="/var/run/relay-control.pid"
-BINARY="relay-control.py"
-RELAY_FILE="$HOME/relays"
+BINARY="$CODE_HOME/relay-control.py"
 
-FLAGS="$PID_FILE $RELAY_FILE"
+FLAGS="$PID_FILE $RELAY_DIR"
 REDIRECT="> $CONFIG_DIR/relay-control.log 2>&1"
 
 
@@ -49,6 +49,11 @@ stop() {
 install() {
     echo "Installing Relay Control Daemon (relay-control)"
     echo "999999" > $PID_FILE
+    mkdir -p $RELAY_DIR
+    for i in 0 1 2 3 4 5 6 7; do
+       echo "0" > "$RELAY_DIR/$i";
+    done;
+
     chown $RUN_AS $PID_FILE
     mkdir -p $CONFIG_DIR
     chown $RUN_AS $CONFIG_DIR
@@ -63,7 +68,7 @@ uninstall() {
     rm -fv "$PID_FILE"
     echo "Notice: The config directory has not been removed"
     echo $CONFIG_DIR
-    update-rc.d -f relay-control remove
+    update-rc.d -f relay-control-daemon remove
     rm -fv "$0"
     echo "Relay Control Daemon has been removed. Home Assistant is still installed."
   fi
