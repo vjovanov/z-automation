@@ -29,11 +29,21 @@ for pin in RELAY_GPIO_MAP.values():
 
 def main():
     switches = [0 for _ in xrange(len(RELAY_GPIO_MAP))]
-    if len(sys.argv) != 2:
-        sys.stderr.write("relay_control.py expects a single argument pointing to the folder with relay states.\n")
+    if len(sys.argv) != 3:
+        sys.stderr.write(
+            "relay-control.py expects two arguments pointing to the PID file and to the folder with relay states.\n")
         sys.exit(1)
 
-    path = sys.argv[1]
+    pid_file = sys.argv[1]
+    if not os.path.isfile(pid_file):
+        sys.stderr.write(
+            "PID file does not exist: " + pid_file)
+        sys.exit(1)
+
+    with open(pid_file, "w") as text_file:
+        text_file.write(str(os.getpid()))
+
+    path = sys.argv[2]
     time = 0
     while True:
         for relay in xrange(len(RELAY_GPIO_MAP)):
