@@ -1,4 +1,3 @@
-import socket
 import fcntl
 import struct
 from time import sleep
@@ -25,6 +24,7 @@ RESET_FILES = [
 RELIABLE_WEBSITES = [
     ("www.google.com", 80),
     ("www.amazon.com", 80),
+    ("www.yandex.com", 80),
 ]
 
 
@@ -54,14 +54,14 @@ def main():
                 s.connect(site_address_port)
                 all_failed = False
             except socket.error as e:
-                print("Can't connect to " + str(site_address_port) ". Reason: " + str(e))
+                print("Can't connect to " + str(site_address_port) + ". Reason: " + str(e))
             finally:
                 s.close()
 
         if all_failed:
             if last_failed:
                 last_failed = False
-                print("Resetting all routers and sensors: could not reach: " + str(site_address_port))
+                print("Resetting all routers and sensors: could not reach:\n" + str(RELIABLE_WEBSITES))
                 reset_wifi()
             else:
                 last_failed = True
