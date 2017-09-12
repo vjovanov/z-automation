@@ -29,7 +29,7 @@ for pin in RELAY_GPIO_MAP.values():
 
 
 def main():
-    switches = [0 for _ in xrange(len(RELAY_GPIO_MAP))]
+    switches = [0 for _ in iter(range(len(RELAY_GPIO_MAP)))]
     if len(sys.argv) != 3:
         sys.stderr.write(
             "relay-control.py expects two arguments pointing to the PID file and to the folder with relay states.\n")
@@ -47,7 +47,7 @@ def main():
     path = sys.argv[2]
     time = 0
     while True:
-        for relay in xrange(len(RELAY_GPIO_MAP)):
+        for relay in iter(range(len(RELAY_GPIO_MAP))):
             switch_state_file_path = path + os.sep + str(relay)
             content = ""
             try:
@@ -70,9 +70,9 @@ def main():
 
             # make sure the pump is running if the heating is on
             if (relay == 1 or relay == 2) and switches[relay] == 1:
-                assert switches[0] == 1;
+                assert switches[0] == 1
 
-            GPIO.output(RELAY_GPIO_MAP[relay], switches[relay])
+            # GPIO.output(RELAY_GPIO_MAP[relay], switches[relay])
 
         sleep(POLL_PERIOD_SECONDS)
         time += 1
