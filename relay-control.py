@@ -1,3 +1,4 @@
+#!/srv/homeassistant/bin/python3
 import sys
 
 POLL_PERIOD_SECONDS = 0.2
