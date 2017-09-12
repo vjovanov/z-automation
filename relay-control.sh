@@ -8,22 +8,20 @@
 # Description:       Home\ Assistant
 ### END INIT INFO
 
-# /etc/init.d Service Script for Home Assistant
+# /etc/init.d Service Script for Zlatibor
 # Created with: https://gist.github.com/naholyr/4275302#file-new-service-sh
 HASS_HOME="/home/homeassistant/"
 PI_HOME="/home/pi/"
 CODE_HOME="$PI_HOME/z-automation/"
-RELAY_DIR="$HOME/relays"
-
+RELAY_DIR="$HASS_HOME/relays"
 PRE_EXEC="python"
 RUN_AS="homeassistant"
 CONFIG_DIR="/var/opt/relay-control"
 PID_FILE="/var/run/relay-control.pid"
 BINARY="$CODE_HOME/relay-control.py"
-
 FLAGS="$PID_FILE $RELAY_DIR"
 REDIRECT="> $CONFIG_DIR/relay-control.log 2>&1"
-
+SERVICE_NAME="Relay Control"
 
 start() {
   if [ -f $PID_FILE ] && kill -0 $(cat $PID_FILE) 2> /dev/null; then
@@ -48,7 +46,7 @@ stop() {
 }
 
 install() {
-    echo "Installing Relay Control Daemon (relay-control)"
+    echo "Installing $SERVICE_NAME Daemon (relay-control)"
     echo "999999" > $PID_FILE
     mkdir -p $RELAY_DIR
     for i in 0 1 2 3 4 5 6 7; do
@@ -72,7 +70,7 @@ uninstall() {
     echo $CONFIG_DIR
     update-rc.d -f relay-control-daemon remove
     rm -fv "$0"
-    echo "Relay Control Daemon has been removed. Home Assistant is still installed."
+    echo "$SERVICE_NAME Daemon has been removed. $SERVICE_NAME is still installed."
   fi
 }
 

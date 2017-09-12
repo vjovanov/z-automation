@@ -8,11 +8,12 @@
 # Description:       Home\ Assistant
 ### END INIT INFO
 
-# /etc/init.d Service Script for Home Assistant
+# /etc/init.d Service Script for Zlatibor
 # Created with: https://gist.github.com/naholyr/4275302#file-new-service-sh
 PRE_EXEC=""
 RUN_AS="homeassistant"
 PID_FILE="/var/run/hass.pid"
+SERVICE_NAME="Home Assistant"
 CONFIG_DIR="/var/opt/homeassistant"
 FLAGS="-v --config $CONFIG_DIR --pid-file $PID_FILE --daemon"
 REDIRECT="> $CONFIG_DIR/home-assistant.log 2>&1"
@@ -40,7 +41,7 @@ stop() {
 }
 
 install() {
-    echo "Installing Home Assistant Daemon (hass-daemon)"
+    echo "Installing $SERVICE_NAME Daemon (hass-daemon)"
     echo "999999" > $PID_FILE
     chown $RUN_AS $PID_FILE
     mkdir -p $CONFIG_DIR
@@ -58,7 +59,7 @@ uninstall() {
     echo $CONFIG_DIR
     update-rc.d -f hass-daemon remove
     rm -fv "$0"
-    echo "Home Assistant Daemon has been removed. Home Assistant is still installed."
+    echo "$SERVICE_NAME Daemon has been removed. $SERVICE_NAME is still installed."
   fi
 }
 
