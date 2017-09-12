@@ -47,7 +47,12 @@ stop() {
 
 install() {
     echo "Installing $SERVICE_NAME Daemon (relay-control)"
+
+    echo "Creating $PID_FILE"
     echo "999999" > $PID_FILE
+    chown $RUN_AS $PID_FILE
+
+    echo "Creating relay files in $RELAY_DIR"
     mkdir -p $RELAY_DIR
     chown $RUN_AS $RELAY_DIR
     for i in 0 1 2 3 4 5 6 7; do
@@ -55,7 +60,7 @@ install() {
        chown $RUN_AS "$RELAY_DIR/$i"
     done;
 
-    chown $RUN_AS $PID_FILE
+    echo "Creating a config dir $CONFIG_DIR"
     mkdir -p $CONFIG_DIR
     chown $RUN_AS $CONFIG_DIR
 }
@@ -66,7 +71,10 @@ uninstall() {
   read SURE
   if [ "$SURE" = "yes" ]; then
     stop
+
+    echo "Removing $PID_FILE"
     rm -fv "$PID_FILE"
+    echo "Removing relay files in $RELAY_DIR"
     rm -fv "$RELAY_DIR"
     echo "Notice: The config directory has not been removed"
     echo $CONFIG_DIR
