@@ -1,11 +1,11 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          relay control
-# Required-Start:    $local_fs $network $named $time $syslog
-# Required-Stop:     $local_fs $network $named $time $syslog
+# Provides:          relay-control
+# Required-Start:    $all
+# Required-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Description:       Home\ Assistant
+# Description:       Relay\ Control
 ### END INIT INFO
 
 # /etc/init.d Service Script for Zlatibor
@@ -35,7 +35,7 @@ start() {
 }
 
 stop() {
-    if [ ! -f "$PID_FILE" ] || ! kill -0 $(cat "$PID_FILE") 2> /dev/null; then
+  if [ ! -f "$PID_FILE" ] || ! kill -0 $(cat "$PID_FILE") 2> /dev/null; then
     echo 'Service not running' >&2
     return 1
   fi
