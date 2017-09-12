@@ -14,7 +14,7 @@ HASS_HOME="/home/homeassistant/"
 PI_HOME="/home/pi/"
 CODE_HOME="$PI_HOME/z-automation/"
 RELAY_DIR="$HASS_HOME/relays"
-PRE_EXEC="python"
+PRE_EXEC="/usr/bin/python"
 RUN_AS="homeassistant"
 CONFIG_DIR="/var/opt/relay-control"
 PID_FILE="/var/run/relay-control.pid"
@@ -49,8 +49,10 @@ install() {
     echo "Installing $SERVICE_NAME Daemon (relay-control)"
     echo "999999" > $PID_FILE
     mkdir -p $RELAY_DIR
+    chown $RUN_AS $RELAY_DIR
     for i in 0 1 2 3 4 5 6 7; do
        echo "0" > "$RELAY_DIR/$i";
+       chown $RUN_AS "$RELAY_DIR/$i"
     done;
 
     chown $RUN_AS $PID_FILE
