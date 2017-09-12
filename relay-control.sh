@@ -11,9 +11,10 @@
 # /etc/init.d Service Script for Zlatibor
 # Created with: https://gist.github.com/naholyr/4275302#file-new-service-sh
 # No network connection so we can run as PI
-RUN_AS="pi"
 PI_HOME="/home/pi/"
 CODE_HOME="$PI_HOME/z-automation/"
+
+RUN_AS="pi"
 RELAY_DIR="$PI_HOME/relays"
 PRE_EXEC="/usr/bin/python3"
 CONFIG_DIR="/var/opt/relay-control"
