@@ -22,7 +22,7 @@ RELAY_GPIO_MAP = {
 }
 
 
-def setup_GPIO():
+def setup_gpio():
     GPIO.setmode(GPIO.BCM)
     for pin in RELAY_GPIO_MAP.values():
         GPIO.setup(pin, GPIO.OUT)
@@ -40,7 +40,7 @@ def main():
         sys.exit(1)
 
     try:
-        setup_GPIO()
+        setup_gpio()
         switches = [0 for _ in iter(range(len(RELAY_GPIO_MAP)))]
         with open(pid_file, "w") as text_file:
             text_file.write(str(os.getpid()))
@@ -79,6 +79,8 @@ def main():
             time += 1
 
     finally:
+        for relay in iter(range(len(RELAY_GPIO_MAP))):
+            GPIO.output(RELAY_GPIO_MAP[relay], 0)
         GPIO.cleanup()
         with open(pid_file, "w") as text_file:
             text_file.write("99999999")

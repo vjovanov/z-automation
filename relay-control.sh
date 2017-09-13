@@ -4,13 +4,14 @@
 # Required-Start:    $all
 # Required-Stop:
 # Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
+# Default-Stop:
 # Description:       Relay\ Control
 ### END INIT INFO
 
 # /etc/init.d Service Script for Zlatibor
 # Created with: https://gist.github.com/naholyr/4275302#file-new-service-sh
-# No network connection so we can run as PI
+
+# No server running so we can run as PI
 PI_HOME="/home/pi/"
 CODE_HOME="$PI_HOME/z-automation/"
 
@@ -26,24 +27,24 @@ SERVICE_NAME="Relay Control"
 
 start() {
   if [ -f $PID_FILE ] && kill -0 $(cat $PID_FILE) 2> /dev/null; then
-    echo 'Service already running' >&2
+    /bin/echo 'Service already running' >&2
     return 1
   fi
-  echo 'Starting service…' >&2
-  local CMD="$PRE_EXEC $BINARY $FLAGS $REDIRECT;"
-  su -c "$CMD" $RUN_AS
-  echo 'Service started' >&2
+  /bin/echo 'Starting service…' >&2
+  /bin/local CMD="$PRE_EXEC $BINARY $FLAGS $REDIRECT;"
+  /bin/su -c "$CMD" $RUN_AS
+  /bin/echo 'Service started' >&2
 }
 
 stop() {
   if [ ! -f "$PID_FILE" ] || ! kill -0 $(cat "$PID_FILE") 2> /dev/null; then
-    echo 'Service not running' >&2
+    /bin/echo 'Service not running' >&2
     return 1
   fi
-  echo 'Stopping service…' >&2
+  /bin/echo 'Stopping service…' >&2
   kill $(cat "$PID_FILE")
   while ps -p $(cat "$PID_FILE") > /dev/null 2>&1; do sleep 1;done;
-  echo 'Service stopped' >&2
+  /bin/echo 'Service stopped' >&2
 }
 
 install() {
@@ -76,7 +77,7 @@ uninstall() {
     echo "Removing $PID_FILE"
     rm -fv "$PID_FILE"
     echo "Removing relay files in $RELAY_DIR"
-    rm -fv "$RELAY_DIR"
+    rm -rf "$RELAY_DIR"
     echo "Notice: The config directory has not been removed"
     echo $CONFIG_DIR
     update-rc.d -f relay-control-daemon remove
