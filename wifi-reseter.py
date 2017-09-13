@@ -78,6 +78,8 @@ def main():
     try:
         last_failed = False
         while True:
+            with open(pid_file, "w") as text_file:
+                text_file.write(str(os.getpid()))
             all_failed = True
             for site_address_port in RELIABLE_WEBSITES:
                 s = socket.socket()
