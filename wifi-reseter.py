@@ -73,9 +73,9 @@ def main():
         while True:
             all_failed = True
             for site_address_port in RELIABLE_WEBSITES:
+                s = socket.socket()
                 try:
                     ip_address = get_ip_address(WLAN_INTERFACE)
-                    s = socket.socket()
                     s.bind((ip_address, 0))
                     s.connect(site_address_port)
                     all_failed = False
