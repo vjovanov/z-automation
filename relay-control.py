@@ -57,10 +57,7 @@ def main():
         sys.exit(1)
 
     pid_file = sys.argv[1]
-    if not os.path.isfile(pid_file):
-        sys.stderr.write("PID file does not exist: " + pid_file)
-        sys.exit(1)
-
+    relay_dir = sys.argv[2]
     killer = GracefulKiller(pid_file)
     try:
         setup_gpio()
@@ -68,10 +65,9 @@ def main():
         with open(pid_file, "w") as text_file:
             text_file.write(str(os.getpid()))
 
-        path = sys.argv[2]
         while True:
             for relay in iter(range(len(RELAY_GPIO_MAP))):
-                switch_state_file_path = path + os.sep + str(relay)
+                switch_state_file_path = relay_dir + os.sep + str(relay)
                 content = ""
                 try:
                     with open(switch_state_file_path, 'r') as content_file:

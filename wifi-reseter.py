@@ -12,7 +12,7 @@ def get_ip_address(ifname):
 # should be enough for all components to go back online
 POLL_PERIOD_SECONDS = 180
 RESET_POWER_OFF_PERIOD = 6
-WLAN_INTERFACE="wlan0"
+WLAN_INTERFACE = "wlan0"
 
 RELIABLE_WEBSITES = [
     ("www.google.com", 80),
@@ -62,21 +62,20 @@ def main():
         sys.exit(1)
 
     pid_file = sys.argv[1]
-    if not os.path.isfile(pid_file):
-        sys.stderr.write("PID file does not exist: " + pid_file)
-        sys.exit(1)
-
+    relay_dir = sys.argv[2]
+    if not os.path.isdir(relay_dir):
+        sys.stderr.write(
+            "Relay dir " + relay_dir + " is not a directory")
     killer = GracefulKiller(pid_file)
-
     try:
         last_failed = False
         while True:
             all_failed = True
-            ip_address = get_ip_address(WLAN_INTERFACE)
             for site_address_port in RELIABLE_WEBSITES:
-                s = socket.socket()
-                s.bind((ip_address, 0))
                 try:
+                    ip_address = get_ip_address(WLAN_INTERFACE)
+                    s = socket.socket()
+                    s.bind((ip_address, 0))
                     s.connect(site_address_port)
                     all_failed = False
                 except socket.error as e:
@@ -88,7 +87,7 @@ def main():
                 if last_failed:
                     last_failed = False
                     print("Resetting all routers and sensors: could not reach:\n" + str(RELIABLE_WEBSITES))
-                    reset_wifi()
+                    reset_wifi(relay_dir)
                 else:
                     last_failed = True
 
