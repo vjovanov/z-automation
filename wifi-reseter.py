@@ -3,10 +3,17 @@ from time import sleep
 import socket
 import sys
 import signal
+import fcntl
+import struct
 
 
 def get_ip_address(ifname):
-    return os.popen('ip addr show ' + ifname).read().split("inet ")[1].split("/")[0]
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', bytes(ifname[:15], 'utf-8'))
+    )[20:24])
 
 
 # should be enough for all components to go back online
