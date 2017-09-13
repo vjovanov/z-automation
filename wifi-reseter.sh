@@ -24,6 +24,7 @@ BINARY="$CODE_HOME/wifi-reseter.py"
 FLAGS="$PID_FILE $RELAY_DIR"
 REDIRECT="> $CONFIG_DIR/wifi-reseter.log 2>&1"
 SERVICE_NAME="WIFI Reseter"
+SERVICE_FILE_NAME="wifi-reseter-daemon"
 
 start() {
   if [ -f ${PID_FILE} ] && kill -0 $(cat ${PID_FILE}) 2> /dev/null; then
@@ -48,7 +49,7 @@ stop() {
 }
 
 install() {
-    echo "Installing $SERVICE_NAME Daemon (relay-control)"
+    echo "Installing $SERVICE_NAME Daemon (${SERVICE_FILE_NAME})"
 
     echo "Creating $PID_FILE"
     echo "999999" > ${PID_FILE}
@@ -70,7 +71,7 @@ uninstall() {
     rm -fv "$PID_FILE"
     echo "Notice: The config directory has not been removed"
     echo ${CONFIG_DIR}
-    update-rc.d -f wifi-reseter-daemon remove
+    update-rc.d -f ${SERVICE_FILE_NAME} remove
     rm -fv "$0"
     echo "$SERVICE_NAME Daemon has been removed. $SERVICE_NAME is still installed."
   fi
