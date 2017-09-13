@@ -85,7 +85,7 @@ def main():
     if not os.path.isdir(relay_dir):
         sys.stderr.write(
             "Relay dir " + relay_dir + " is not a directory.")
-    killer = GracefulKiller(pid_file)
+    killer = GracefulKiller(pid_file, relay_dir)
     try:
         last_failed = False
         while True:
@@ -118,7 +118,7 @@ def main():
             if killer.killed:
                 break
     finally:
-        reset_state(pid_file)
+        reset_state(pid_file, relay_dir)
 
 
 if __name__ == '__main__':
