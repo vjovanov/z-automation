@@ -3,6 +3,7 @@ import signal
 
 POLL_PERIOD_SECONDS = 0.2
 try:
+    # noinspection PyUnresolvedReferences
     import RPi.GPIO as GPIO
 except RuntimeError:
     print("Error importing RPi.GPIO!  This is probably because you need superuser privileges.\n" +
@@ -45,6 +46,7 @@ class GracefulKiller:
         signal.signal(signal.SIGINT, self.exit_gracefully)
         signal.signal(signal.SIGTERM, self.exit_gracefully)
 
+    # noinspection PyUnusedLocal
     def exit_gracefully(self, signum, frame):
         self.killed = True
         reset_state(self.pid_file)  # just in case normal break is never reached
