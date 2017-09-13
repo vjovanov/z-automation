@@ -1,4 +1,5 @@
 import sys
+import signal
 
 POLL_PERIOD_SECONDS = 0.2
 try:
@@ -28,6 +29,27 @@ def setup_gpio():
         GPIO.setup(pin, GPIO.OUT)
 
 
+def reset_state(pid_file):
+    for relay in iter(range(len(RELAY_GPIO_MAP))):
+        GPIO.output(RELAY_GPIO_MAP[relay], 0)
+    GPIO.cleanup()
+    with open(pid_file, "w") as text_file:
+        text_file.write("99999999")
+
+
+class GracefulKiller:
+    killed = False
+
+    def __init__(self, pid_file):
+        self.pid_file = pid_file
+        signal.signal(signal.SIGINT, self.exit_gracefully)
+        signal.signal(signal.SIGTERM, self.exit_gracefully)
+
+    def exit_gracefully(self, signum, frame):
+        self.killed = True
+        reset_state(self.pid_file)  # just in case normal break is never reached
+
+
 def main():
     if len(sys.argv) != 3:
         sys.stderr.write(
@@ -39,6 +61,7 @@ def main():
         sys.stderr.write("PID file does not exist: " + pid_file)
         sys.exit(1)
 
+    killer = GracefulKiller(pid_file)
     try:
         setup_gpio()
         switches = [0 for _ in iter(range(len(RELAY_GPIO_MAP)))]
@@ -46,7 +69,6 @@ def main():
             text_file.write(str(os.getpid()))
 
         path = sys.argv[2]
-        time = 0
         while True:
             for relay in iter(range(len(RELAY_GPIO_MAP))):
                 switch_state_file_path = path + os.sep + str(relay)
@@ -76,14 +98,10 @@ def main():
                 GPIO.output(RELAY_GPIO_MAP[relay], switches[relay])
 
             sleep(POLL_PERIOD_SECONDS)
-            time += 1
-
+            if killer.killed:
+                break
     finally:
-        for relay in iter(range(len(RELAY_GPIO_MAP))):
-            GPIO.output(RELAY_GPIO_MAP[relay], 0)
-        GPIO.cleanup()
-        with open(pid_file, "w") as text_file:
-            text_file.write("99999999")
+        reset_state(pid_file)
 
 
 if __name__ == '__main__':

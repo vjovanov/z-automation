@@ -31,8 +31,8 @@ start() {
     return 1
   fi
   /bin/echo 'Starting service…' >&2
-  /bin/local CMD="$PRE_EXEC $BINARY $FLAGS $REDIRECT;"
-  /bin/su -c "$CMD" $RUN_AS
+  local CMD="$PRE_EXEC $BINARY $FLAGS $REDIRECT;"
+  /bin/su -c "$CMD" $RUN_AS &
   /bin/echo 'Service started' >&2
 }
 
@@ -42,7 +42,7 @@ stop() {
     return 1
   fi
   /bin/echo 'Stopping service…' >&2
-  kill $(cat "$PID_FILE")
+  /bin/kill $(cat "$PID_FILE")
   while ps -p $(cat "$PID_FILE") > /dev/null 2>&1; do sleep 1;done;
   /bin/echo 'Service stopped' >&2
 }
