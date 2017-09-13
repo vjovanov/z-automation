@@ -1,6 +1,4 @@
-import fcntl
 import os
-import struct
 from time import sleep
 import socket
 import sys
@@ -8,18 +6,13 @@ import signal
 
 
 def get_ip_address(ifname):
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    return socket.inet_ntoa(fcntl.ioctl(
-        s.fileno(),
-        0x8915,
-        struct.pack('256s', ifname[:15])
-    )[20:24])
+    return os.popen('ip addr show ' + ifname).read().split("inet ")[1].split("/")[0]
 
 
 # should be enough for all components to go back online
 POLL_PERIOD_SECONDS = 180
 RESET_POWER_OFF_PERIOD = 6
-WLAN_INTERFACE = "wlan0"
+WLAN_INTERFACE="wlan0"
 
 RELIABLE_WEBSITES = [
     ("www.google.com", 80),
