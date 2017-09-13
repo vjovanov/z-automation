@@ -50,6 +50,7 @@ class GracefulKiller:
         signal.signal(signal.SIGINT, self.exit_gracefully)
         signal.signal(signal.SIGTERM, self.exit_gracefully)
 
+    # noinspection PyUnusedLocal
     def exit_gracefully(self, signum, frame):
         self.killed = True
         reset_state(self.pid_file)  # just in case loop break is never reached
