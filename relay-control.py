@@ -58,6 +58,10 @@ def main():
 
     pid_file = sys.argv[1]
     relay_dir = sys.argv[2]
+    if not os.path.isdir(relay_dir):
+        sys.stderr.write(
+            "Relay dir " + relay_dir + " is not a directory")
+
     killer = GracefulKiller(pid_file)
     try:
         setup_gpio()
