@@ -79,6 +79,7 @@ def main():
                     s.bind((ip_address, 0))
                     s.connect(site_address_port)
                     all_failed = False
+                    last_failed = False
                 except socket.error as e:
                     print("Can't connect to " + str(site_address_port) + ". Reason: " + str(e))
                 finally:
