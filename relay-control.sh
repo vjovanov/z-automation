@@ -30,6 +30,10 @@ start() {
     /bin/echo 'Service already running' >&2
     return 1
   fi
+
+  /bin/echo "999999" > ${PID_FILE}
+  chown $RUN_AS $PID_FILE
+
   /bin/echo 'Starting service…' >&2
   local CMD="$PRE_EXEC $BINARY $FLAGS $REDIRECT;"
   /bin/su -c "$CMD" ${RUN_AS} &
@@ -49,10 +53,6 @@ stop() {
 
 install() {
     echo "Installing $SERVICE_NAME Daemon (relay-control)"
-
-    echo "Creating $PID_FILE"
-    echo "999999" > $PID_FILE
-    chown $RUN_AS $PID_FILE
 
     echo "Creating relay files in $RELAY_DIR"
     mkdir -p $RELAY_DIR

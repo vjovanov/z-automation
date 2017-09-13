@@ -31,6 +31,10 @@ start() {
     /bin/echo 'Service already running' >&2
     return 1
   fi
+
+  /bin/echo "999999" > ${PID_FILE}
+  chown $RUN_AS $PID_FILE
+
   /bin/echo 'Starting service…' >&2
   local CMD="$PRE_EXEC $BINARY $FLAGS $REDIRECT;"
   /bin/su -c "$CMD" ${RUN_AS} &
@@ -50,10 +54,6 @@ stop() {
 
 install() {
     echo "Installing $SERVICE_NAME Daemon (${SERVICE_FILE_NAME})"
-
-    echo "Creating $PID_FILE"
-    echo "999999" > ${PID_FILE}
-    chown ${RUN_AS} ${PID_FILE}
 
     echo "Creating a config dir $CONFIG_DIR"
     mkdir -p "$CONFIG_DIR"
