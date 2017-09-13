@@ -27,12 +27,10 @@ RELIABLE_WEBSITES = [
     ("www.yandex.com", 80),
 ]
 
+RESET_RELAYS = [6, 7]
 
 def reset_wifi(relay_dir):
-    reset_files = [
-        relay_dir + "7",
-        relay_dir + "8"
-    ]
+    reset_files = [ relay_dir + "/" + str(i) for i in RESET_RELAYS ]
     for path in reset_files:
         with open(path, "w") as text_file:
             text_file.write("1")
