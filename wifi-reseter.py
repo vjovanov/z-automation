@@ -29,36 +29,49 @@ RELIABLE_WEBSITES = [
 
 RESET_RELAYS = [6, 7]
 
+
 def reset_wifi(relay_dir):
-    reset_files = [ relay_dir + "/" + str(i) for i in RESET_RELAYS ]
+    reset_files = relay_files(relay_dir)
     for path in reset_files:
         with open(path, "w") as text_file:
             text_file.write("1")
 
     sleep(RESET_POWER_OFF_PERIOD)
 
+    reset_relays(reset_files)
+
+
+def reset_relays(reset_files):
     for path in reset_files:
         with open(path, "w") as text_file:
             text_file.write("0")
 
 
-def reset_state(pid_file):
+def reset_state(pid_file, relay_dir):
     with open(pid_file, "w") as text_file:
         text_file.write("99999999")
+
+    reset_files = relay_files(relay_dir)
+    reset_relays(reset_files)
+
+
+def relay_files(relay_dir):
+    return [relay_dir + "/" + str(i) for i in RESET_RELAYS]
 
 
 class GracefulKiller:
     killed = False
 
-    def __init__(self, pid_file):
+    def __init__(self, pid_file, relay_dir):
         self.pid_file = pid_file
+        self.relay_dir = relay_dir
         signal.signal(signal.SIGINT, self.exit_gracefully)
         signal.signal(signal.SIGTERM, self.exit_gracefully)
 
     # noinspection PyUnusedLocal
     def exit_gracefully(self, signum, frame):
         self.killed = True
-        reset_state(self.pid_file)  # just in case loop break is never reached
+        reset_state(self.pid_file, self.relay_dir)  # just in case loop break is never reached
 
 
 def main():
