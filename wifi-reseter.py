@@ -29,36 +29,49 @@ RELIABLE_WEBSITES = [
 
 RESET_RELAYS = [5, 6]
 
+
 def reset_wifi(relay_dir):
-    reset_files = [ relay_dir + "/" + str(i) for i in RESET_RELAYS ]
+    reset_files = relay_files(relay_dir)
     for path in reset_files:
         with open(path, "w") as text_file:
             text_file.write("1")
 
     sleep(RESET_POWER_OFF_PERIOD)
 
+    reset_relays(reset_files)
+
+
+def reset_relays(reset_files):
     for path in reset_files:
         with open(path, "w") as text_file:
             text_file.write("0")
 
 
-def reset_state(pid_file):
+def reset_state(pid_file, relay_dir):
     with open(pid_file, "w") as text_file:
         text_file.write("99999999")
+
+    reset_files = relay_files(relay_dir)
+    reset_relays(reset_files)
+
+
+def relay_files(relay_dir):
+    return [relay_dir + "/" + str(i) for i in RESET_RELAYS]
 
 
 class GracefulKiller:
     killed = False
 
-    def __init__(self, pid_file):
+    def __init__(self, pid_file, relay_dir):
         self.pid_file = pid_file
+        self.relay_dir = relay_dir
         signal.signal(signal.SIGINT, self.exit_gracefully)
         signal.signal(signal.SIGTERM, self.exit_gracefully)
 
     # noinspection PyUnusedLocal
     def exit_gracefully(self, signum, frame):
         self.killed = True
-        reset_state(self.pid_file)  # just in case loop break is never reached
+        reset_state(self.pid_file, self.relay_dir)  # just in case loop break is never reached
 
 
 def main():
@@ -72,7 +85,7 @@ def main():
     if not os.path.isdir(relay_dir):
         sys.stderr.write(
             "Relay dir " + relay_dir + " is not a directory.")
-    killer = GracefulKiller(pid_file)
+    killer = GracefulKiller(pid_file, relay_dir)
     try:
         last_failed = False
         while True:
@@ -86,7 +99,6 @@ def main():
                     s.bind((ip_address, 0))
                     s.connect(site_address_port)
                     all_failed = False
-                    last_failed = False
                 except socket.error as e:
                     print("Can't connect to " + str(site_address_port) + ". Reason: " + str(e))
                 finally:
@@ -99,12 +111,14 @@ def main():
                     reset_wifi(relay_dir)
                 else:
                     last_failed = True
+            else:
+                last_failed = False
 
             sleep(POLL_PERIOD_SECONDS)
             if killer.killed:
                 break
     finally:
-        reset_state(pid_file)
+        reset_state(pid_file, relay_dir)
 
 
 if __name__ == '__main__':
