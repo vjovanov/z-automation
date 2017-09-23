@@ -27,7 +27,7 @@ RELIABLE_WEBSITES = [
     ("www.yandex.com", 80),
 ]
 
-RESET_RELAYS = [6, 7]
+RESET_RELAYS = [5, 6]
 
 def reset_wifi(relay_dir):
     reset_files = [ relay_dir + "/" + str(i) for i in RESET_RELAYS ]
