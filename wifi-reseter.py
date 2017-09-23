@@ -18,7 +18,7 @@ def get_ip_address(ifname):
 
 # should be enough for all components to go back online
 POLL_PERIOD_SECONDS = 180
-RESET_POWER_OFF_PERIOD = 6
+RESET_POWER_OFF_PERIOD = 10
 WLAN_INTERFACE = "wlan0"
 
 RELIABLE_WEBSITES = [
