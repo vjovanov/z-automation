@@ -19,7 +19,7 @@ def get_ip_address(ifname):
 # should be enough for all components to go back online
 POLL_PERIOD_SECONDS = 180
 RESET_POWER_OFF_PERIOD = 10
-WLAN_INTERFACE = "wlan0"
+WLAN_INTERFACE = "eth0"
 
 RELIABLE_WEBSITES = [
     ("www.google.com", 80),
@@ -97,8 +97,10 @@ def main():
                 try:
                     ip_address = get_ip_address(WLAN_INTERFACE)
                     s.bind((ip_address, 0))
+                    print("Connecting to " + str(site_address_port) + ". Over: " + WLAN_INTERFACE)
                     s.connect(site_address_port)
                     all_failed = False
+                    print("Connected to " + str(site_address_port) + ". Over: " + WLAN_INTERFACE)
                 except socket.error as e:
                     print("Can't connect to " + str(site_address_port) + ". Reason: " + str(e))
                 finally:

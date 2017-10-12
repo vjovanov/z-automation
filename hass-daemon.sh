@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 ### BEGIN INIT INFO
 # Provides:          hass
 # Required-Start:    $local_fs $network $named $time $syslog
