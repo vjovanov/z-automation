@@ -13,3 +13,9 @@ cp "$PI_HOME/z-automation/wifi-reseter.sh" /etc/init.d/wifi-reseter-daemon
 chmod +x /etc/init.d/wifi-reseter-daemon
 update-rc.d wifi-reseter-daemon defaults
 service wifi-reseter-daemon install
+
+
+cp "$PI_HOME/z-automation/hass-daemon.sh"  /etc/init.d/hass-daemon
+chmod +x /etc/init.d/hass-daemon
+update-rc.d hass-daemon defaults
+service hass-daemon install
