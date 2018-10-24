@@ -88,9 +88,9 @@ def main():
     killer = GracefulKiller(pid_file, relay_dir)
     try:
         last_failed = False
+        with open(pid_file, "w") as text_file:
+            text_file.write(str(os.getpid()))
         while True:
-            with open(pid_file, "w") as text_file:
-                text_file.write(str(os.getpid()))
             all_failed = True
             for site_address_port in RELIABLE_WEBSITES:
                 s = socket.socket()
