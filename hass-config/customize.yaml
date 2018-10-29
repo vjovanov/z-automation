@@ -1,0 +1,107 @@
+sensor.dark_sky_temperature:
+  friendly_name: Spoljna Temperatura
+switch.gas_heating:
+  icon: mdi:fire
+sensor.dnevna_soba_suteren_relative_humidity:
+  friendly_name: "Relativna vla\u017Enost"
+  icon: mdi:water-percent
+sensor.dnevna_soba_relative_humidity:
+  friendly_name: "Relativna vla\u017Enost"
+  icon: mdi:water-percent
+sensor.available_disk_space:
+  friendly_name: Slobodno mesto na disku
+  icon: mdi:harddisk
+sensor.available_phisical_memory:
+  friendly_name: "Slobodno fizi\u010Dke memorije"
+  icon: mdi:memory
+group.heating_control:
+  order: 1
+sun.sun:
+  friendly_name: Doba dana
+sensor.aeotec_zw095_home_energy_meter_gen5_power:
+  friendly_name: "Potro\u0161nja"
+sensor.google_wifi_uptime:
+  friendly_name: WiFi uptime
+sensor.pi_uptime:
+  friendly_name: Pi vreme rada
+  icon: mdi:timelapse
+sensor.aeotec_zw095_home_energy_meter_gen5_current:
+  friendly_name: Protok struje
+sensor.google_wifi_status:
+  friendly_name: WiFi verzija
+sensor.google_wifi_current_version:
+  friendly_name: WiFi trenutna verzija
+sensor.google_wifi_local_ip:
+  friendly_name: WiFi lokalna IP adresa
+sensor.google_wifi_last_restart:
+  friendly_name: WiFi Poslednji Restart
+sensor.google_wifi_new_version:
+  friendly_name: WiFi nova verzija
+sensor.aeotec_zw095_home_energy_meter_gen5_energy:
+  friendly_name: "Potro\u0161ena Energija"
+sensor.ha_current_version:
+  friendly_name: HA trenutna verzija
+  icon: mdi:checkbox-marked-circle-outline
+sensor.ha_latest_release:
+  friendly_name: HA najnovija verzija
+  icon: mdi:update
+sensor.dark_sky_apparent_temperature:
+  friendly_name: "Subjektivni ose\u0107aj"
+sensor.dark_sky_cloud_coverage:
+  friendly_name: "Obla\u010Dnost"
+sensor.dark_sky_daily_high_temperature:
+  friendly_name: Maksimalna temperatura
+sensor.dark_sky_daily_low_temperature:
+  friendly_name: Minimalna temperatura
+sensor.dark_sky_humidity:
+  friendly_name: "Relativna vla\u017Enost"
+sensor.dark_sky_nearest_storm_distance:
+  friendly_name: "Udaljenost najbli\u017Ee oluje"
+sensor.dark_sky_precip_probability:
+  friendly_name: "Verovatno\u0107a padavina"
+sensor.dark_sky_precip:
+  friendly_name: Padavine
+sensor.dark_sky_pressure:
+  friendly_name: "Vazdu\u0161ni pritisak"
+sensor.dark_sky_summary:
+  friendly_name: Vreme
+sensor.dark_sky_wind_bearing:
+  friendly_name: Pravac vetra
+sensor.dark_sky_wind_speed:
+  friendly_name: Brzina vetra
+sensor.aeotec_zw095_home_energy_meter_gen5_previous_reading:
+  friendly_name: "Prethodno \u010Ditanje ukupne potro\u0161nje"
+sensor.dnevna_soba_alarm_level:
+  friendly_name: Nivo alarma
+sensor.dnevna_soba_suteren_ultraviolet:
+  friendly_name: "Ultraljubi\u010Dasto zra\u010Denje"
+sensor.aeotec_zw095_home_energy_meter_gen5_voltage:
+  friendly_name: Napon na mrezi
+sensor.aeotec_zw095_home_energy_meter_gen5_previous_reading_2:
+  friendly_name: "Prethodno o\u010Ditavanje energije"
+binary_sensor.dnevna_soba_suteren_sensor:
+  friendly_name: Binarni sensor prisustva
+sensor.dnevna_soba_alarm_type:
+  friendly_name: Tip alarma
+sensor.dnevna_soba_burglar:
+  friendly_name: Provala
+sensor.dnevna_soba_luminance:
+  friendly_name: Osvetljenost
+binary_sensor.dnevna_soba_sensor:
+  friendly_name: Binarni senzor prisustva
+sensor.dnevna_soba_suteren_alarm_level:
+  friendly_name: Nivo alarma
+sensor.dnevna_soba_suteren_alarm_type:
+  friendly_name: Tip alarma
+sensor.dnevna_soba_suteren_burglar:
+  friendly_name: Provala
+sensor.dnevna_soba_suteren_temperature:
+  friendly_name: Temperatura
+sensor.dnevna_soba_suteren_luminance:
+  friendly_name: Osvetljenost
+sensor.dnevna_soba_temperature:
+  friendly_name: Temperatura
+switch.electrical_heating:
+  friendly_name: "Elektri\u010Dno grejanje"
+sensor.cpu_temperature:
+  friendly_name: Temperatura procesora

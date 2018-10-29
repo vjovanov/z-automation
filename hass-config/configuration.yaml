@@ -1,0 +1,177 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Zlatibor
+ 
+  # Location required to calculate the time the sun rises and sets
+  latitude: 43.7321
+  longitude: 19.7054
+ 
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 981
+  
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Belgrade
+
+  # Customization file
+  customize: !include customize.yaml
+
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+http:
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  #base_url: 212.200.76.10:26681
+  server_port: 26681
+  api_password: !secret http_password
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  include_used_components: true
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+# conversation:
+
+recorder:
+  include:
+    domains:
+      - sensor
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Weather prediction
+sensor:
+  - platform: yr
+
+# Text to speech
+tts:
+  - platform: google
+
+sensor:
+  - platform: yr
+  - platform: command_line
+    name: CPU Temperature
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    unit_of_measurement: "°C"
+    value_template: '{{ (value | multiply(0.001) | float) | round(1) }}'
+  - platform: command_line
+    name: Available Disk Space
+    command: "df -m --output=avail /  | tail -n 1 | sed 's/ *$//g' | sed 's/^ *//g'"
+    unit_of_measurement: "MB"
+  - platform: command_line
+    name: Available Phisical Memory
+    command: "free -m | awk -v RS= '{print $10}'"
+    unit_of_measurement: "MB"
+  - platform: command_line
+    name: Pi Uptime
+    command: "uptime -p"
+  - platform: command_line
+    command: python3 -c "import requests; print(requests.get('https://pypi.python.org/pypi/homeassistant/json').json()['info']['version'])"
+    name: HA Latest Release
+  - platform: command_line
+    command: /srv/homeassistant/bin/hass --version
+    name: HA Current Version
+  - platform: darksky
+    api_key: bce958a356048b9226d52e608dce5a31
+    monitored_conditions:
+      - summary
+      - icon
+      - precip_probability
+      - temperature
+      - apparent_temperature
+      - wind_speed
+      - wind_bearing
+      - cloud_cover
+      - humidity
+      - pressure
+      - temperature_max
+      - temperature_min
+      - precip_type
+      - nearest_storm_distance
+    update_interval: '00:02:30'
+  - platform: google_wifi
+    host: 192.168.86.1
+    monitored_conditions:
+      - status
+      - uptime
+      - last_restart
+      - current_version
+      - new_version
+      - local_ip
+  - platform: template
+    sensors:
+      average_temperature:
+        friendly_name: "Unutrasnja"
+        unit_of_measurement: "°C"
+        value_template: "{{ (float(states.sensor.dnevna_soba_temperature.state) + float(states.sensor.dnevna_soba_suteren_temperature.state)) / 2 | round(2) }}"
+      outside_temperature:
+        friendly_name: "Spoljna"
+        unit_of_measurement: "°C"
+        value_template: "{{ states.sensor.dark_sky_temperature.state }}"
+
+zwave:
+  usb_path: /dev/ttyAMA0
+  polling_interval: 30000
+
+input_number:
+  desired_temperature:
+    icon: mdi:temperature-celsius
+    name: Zeljena Temp.
+    initial: 22
+    min: 16
+    max: 25
+    step: 1
+
+shell_command:
+  set_desired_temperature: "echo {{ banana }} > /home/pi/heating/desired-temperature"
+
+switch:
+  platform: command_line
+  switches:
+    electrical_heating:
+      command_on: "echo 1 > /home/pi/heating/electrical-heating-switch"
+      command_off: "echo 0 > /home/pi/heating/electrical-heating-switch"
+      command_state: "cat /home/pi/heating/electrical-heating-switch"
+      value_template: '{{ value == "1" }}'
+      friendly_name: Elektricno grejanje
+
+    gas_heating:
+      command_on: "echo 1 > /home/pi/heating/gas-heating-switch"
+      command_off: "echo 0 > /home/pi/heating/gas-heating-switch"
+      command_state: "cat /home/pi/heating/gas-heating-switch"
+      value_template: '{{ value == "1" }}'
+      friendly_name: Grejanje na naftu
+
+device_tracker:
+  - platform: nmap_tracker
+    hosts: 192.168.1.1/24
+    exclude:
+     - 192.168.86.2
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
