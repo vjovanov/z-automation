@@ -81,6 +81,7 @@ heating_control:
   icon: mdi:fire
   control: hidden
   entities:
+     - input_slider.desired_temperature
      - switch.electrical_heating
      - switch.gas_heating
 
