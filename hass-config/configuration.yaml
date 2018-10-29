@@ -136,7 +136,7 @@ zwave:
   usb_path: /dev/ttyAMA0
   polling_interval: 30000
 
-input_slider:
+input_number:
   desired_temperature:
     icon: mdi:temperature-celsius
     name: Zeljena Temp.
