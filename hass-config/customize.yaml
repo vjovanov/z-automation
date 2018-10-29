@@ -99,7 +99,7 @@ sensor.dnevna_soba_suteren_temperature:
   friendly_name: Temperatura
 sensor.aeotec_zw100_multisensor_6_luminance_3:
   friendly_name: Osvetljenost
-sensor.sensor.aeotec_zw100_multisensor_6_temperature_3:
+sensor.aeotec_zw100_multisensor_6_temperature_3:
   friendly_name: Temperatura
 switch.electrical_heating:
   friendly_name: "Elektri\u010Dno grejanje"
