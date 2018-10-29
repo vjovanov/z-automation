@@ -122,7 +122,7 @@ sensor:
       average_temperature:
         friendly_name: "Unutrasnja"
         unit_of_measurement: "°C"
-        value_template: "{{ (float(states.sensor.aeotec_zw100_multisensor_6_temperature_3.state) + float(states.sensor.dnevna_soba_suteren_temperature.state)) / 2 | round(2) }}"
+        value_template: "{{ (float(states.sensor.aeotec_zw100_multisensor_6_temperature_3.state) + float(states.sensor.aeotec_zw100_multisensor_6_temperature_4.state)) / 2 | round(2) }}"
       outside_temperature:
         friendly_name: "Spoljna"
         unit_of_measurement: "°C"
