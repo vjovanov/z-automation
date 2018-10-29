@@ -63,7 +63,7 @@ underground_living_room:
     - sensor.aeotec_zw100_multisensor_6_luminance_3
     - sensor.aeotec_zw100_multisensor_6_alarm_level_4
     - sensor.aeotec_zw100_multisensor_6_alarm_type_4
-    - sensor.aeotec_zw100_multisensor_6_alarm_burglar_4
+    - sensor.aeotec_zw100_multisensor_6_burglar_4
 
 living_room:
    name: Dnevna Soba
@@ -74,7 +74,7 @@ living_room:
      - sensor.aeotec_zw100_multisensor_6_luminance_4
      - sensor.aeotec_zw100_multisensor_6_alarm_level_5
      - sensor.aeotec_zw100_multisensor_6_alarm_type_5
-     - sensor.aeotec_zw100_multisensor_6_alarm_burglar_5
+     - sensor.aeotec_zw100_multisensor_6_burglar_5
 
 heating_control:
   name: Kontrola Grejanja
