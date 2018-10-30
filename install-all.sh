@@ -16,6 +16,9 @@ apt install vim
 wget -q -O - razberry.z-wave.me/install 14 | sudo bash
 sudo update-rc.d z-way-server remove
 
+# Scripts
+pip3 install requests
+
 # GPIO
 apt-get install python-rpi.gpio python3-rpi.gpio
 
