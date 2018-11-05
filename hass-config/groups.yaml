@@ -89,13 +89,14 @@ electrics:
    name: Elektrika
    icon: mdi:flash
    entities:
-     - sensor.aeotec_zw095_home_energy_meter_gen5_energy_5
-     - sensor.aeotec_zw095_home_energy_meter_gen5_power_2
-     - sensor.aeotec_zw095_home_energy_meter_gen5_voltage_2
-     - sensor.aeotec_zw095_home_energy_meter_gen5_power_3
-     - sensor.aeotec_zw095_home_energy_meter_gen5_voltage_3
-     - sensor.aeotec_zw095_home_energy_meter_gen5_power_4
-     - sensor.aeotec_zw095_home_energy_meter_gen5_voltage_4
+     - sensor.aeotec_zw095_home_energy_meter_gen5_energy_9
+     - sensor.aeotec_zw095_home_energy_meter_gen5_energy_10
+     - sensor.aeotec_zw095_home_energy_meter_gen5_energy_11
+     - sensor.aeotec_zw095_home_energy_meter_gen5_energy_12
+     - sensor.aeotec_zw095_home_energy_meter_gen5_power_9
+     - sensor.aeotec_zw095_home_energy_meter_gen5_power_10
+     - sensor.aeotec_zw095_home_energy_meter_gen5_power_11
+     - sensor.aeotec_zw095_home_energy_meter_gen5_power_12
 
 pi:
   name: Raspberry Pi

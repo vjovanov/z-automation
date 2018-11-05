@@ -142,7 +142,8 @@ input_number:
     step: 1
 
 shell_command:
-  set_desired_temperature: "echo {{ banana }} > /home/pi/heating/desired-temperature"
+  set_desired_temperature: /bin/bash -c "echo '{{ states.input_number.desired_temperature.state }}' > /home/pi/heating/desired-temperature"
+  set_current_temperature: /bin/bash -c "echo '{{ states.sensor.aeotec_zw100_multisensor_6_temperature_3.state }}' > /home/pi/heating/current-temperature"
 
 switch:
   platform: command_line
