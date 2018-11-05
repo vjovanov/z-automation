@@ -4,7 +4,7 @@
     entity_id: input_number.desired_temperature
   action:
     service: shell_command.set_desired_temperature
-- alias: run_set_desired_temperature
+- alias: run_set_current_temperature
   trigger:
     platform: state
     entity_id: sensor.aeotec_zw100_multisensor_6_temperature_3 
