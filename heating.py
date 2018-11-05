@@ -38,16 +38,16 @@ current_temperature = -1.0
 
 def read_state(relay_dir, thermostat_dir):
     global gas_heating_switch, electrical_heating_switch, desired_temperature, current_temperature, electrical_heating_on, gas_heating_on
-    with open(os.path.join(thermostat_dir, 'gas_heating_switch'), 'r') as content_file:
+    with open(os.path.join(thermostat_dir, 'gas-heating-switch'), 'r') as content_file:
         gas_heating_switch = int(content_file.read()) == 1
 
-    with open(os.path.join(thermostat_dir, 'electrical_heating_switch'), 'r') as content_file:
+    with open(os.path.join(thermostat_dir, 'electrical-heating-switch'), 'r') as content_file:
         electrical_heating_switch = int(content_file.read()) == 1
 
-    with open(os.path.join(thermostat_dir, 'desired_temperature'), 'r') as content_file:
+    with open(os.path.join(thermostat_dir, 'desired-temperature'), 'r') as content_file:
         desired_temperature = float(content_file.read())
 
-    with open(os.path.join(thermostat_dir, 'current_temperature'), 'r') as content_file:
+    with open(os.path.join(thermostat_dir, 'current-temperature'), 'r') as content_file:
         current_temperature = float(content_file.read())
 
     with open(os.path.join(relay_dir, '1'), 'r') as content_file:
@@ -65,7 +65,7 @@ def main():
         sys.exit(1)
 
     pid_file = sys.argv[1]
-    relay_dir = sys.argv[2]
+    relay_dir = sys.argv[3]
     if not os.path.isdir(relay_dir):
         sys.stderr.write(
             "Relay dir " + relay_dir + " is not a directory.")
@@ -73,7 +73,7 @@ def main():
     thermostat_dir = sys.argv[2]
     if not os.path.isdir(relay_dir):
         sys.stderr.write(
-            "Thermostat dir " + relay_dir + " is not a directory.")
+            "Thermostat dir " + thermostat_dir + " is not a directory.")
 
     killer = GracefulKiller(pid_file, relay_dir)
     try:
@@ -104,7 +104,7 @@ def main():
                 else:
                     heating("gas", "off")
 
-            if (desired_temperature - DELTA) >= current_temperature > (desired_temperature - GAS_DELTA):
+            if (desired_temperature - GAS_DELTA) >= current_temperature > (desired_temperature - GAS_DELTA):
                 if electrical_heating_switch:
                     # Keep the house in balance with electrical heating
                     heating("electrical", "on")
