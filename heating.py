@@ -6,14 +6,47 @@ import os
 
 POLL_PERIOD_SECONDS = 1
 DELTA = 0.5
-GAS_DELTA = 1.5
+
+gas_heating_switch = False
+electrical_heating_switch = False
+gas_heating_on = False
+electrical_heating_on = False
+relay_dir = None
+
+
+def relay_state(value):
+    return '1' if value == True else '0'
+
+def heating(heating_type, state):
+    if heating_type is 'electrical':
+        global electrical_heating_on
+        electrical_heating_on = state
+    
+    if heating_type is 'gas':
+        global gas_heating_on
+        gas_heating_on = state
+    
+    # pump works if any heating is on
+    if gas_heating_on or electrical_heating_on:
+        with open(os.path.join(relay_dir, '0'), 'w') as r0:
+            r0.write(relay_state(True))
+
+    with open(os.path.join(relay_dir, '1'), 'w') as r1:
+            r1.write(relay_state(gas_heating_on))
+
+    with open(os.path.join(relay_dir, '2'), 'w') as r2:
+            r2.write(relay_state(electrical_heating_on))
+    
+    if not (gas_heating_on or electrical_heating_on):
+        with open(os.path.join(relay_dir, '0'), 'w') as r0:
+            r0.write(relay_state(False))
+
 
 def reset_state(pid_file):
     with open(pid_file, "w") as text_file:
         text_file.write("99999999")
-
-def heating(type, state):
-    print(type + ": " + state)
+    heating('electrical', False)
+    heating('gas', False)
 
 class GracefulKiller:
     killed = False
@@ -26,13 +59,10 @@ class GracefulKiller:
 
     # noinspection PyUnusedLocal
     def exit_gracefully(self, signum, frame):
+        reset_state(pid_file)
         self.killed = True
         reset_state(self.pid_file)
 
-gas_heating_switch = False
-electrical_heating_switch = False
-gas_heating_on = False
-electrical_heating_on = False
 desired_temperature = -1.0
 current_temperature = -1.0
 
@@ -63,7 +93,8 @@ def main():
             "heating.py expects three arguments pointing to the PID file, to the relay dir, and to the folder with "
             "thermostat data.\n")
         sys.exit(1)
-
+    
+    global relay_dir
     pid_file = sys.argv[1]
     relay_dir = sys.argv[3]
     if not os.path.isdir(relay_dir):
@@ -82,51 +113,21 @@ def main():
 
         while True:
             read_state(relay_dir, thermostat_dir)
-            assert GAS_DELTA > DELTA
             assert desired_temperature >= 3
 
-            # verify state is correct
-            print(current_temperature, desired_temperature, "gas: " + "(" + str(gas_heating_switch) + "," + str(gas_heating_on) + ")", "el: (" + str(electrical_heating_switch) + "," + str(electrical_heating_on) + ")")
-
-            if current_temperature > (desired_temperature + DELTA):
-                heating("electrical", "off")
-                heating("gas", "off")
-
-            if (desired_temperature - DELTA) < current_temperature <= (desired_temperature + DELTA):
-                if electrical_heating_switch and electrical_heating_on:
-                    # Keep the house in balance with electrical heating
-                    heating("electrical", "on")
-                else:
-                    heating("electrical", "off")
-
-                if gas_heating_switch and not electrical_heating_switch and gas_heating_on:
-                    heating("gas", "on")
-                else:
-                    heating("gas", "off")
-
-            if (desired_temperature - GAS_DELTA) >= current_temperature > (desired_temperature - GAS_DELTA):
+            if current_temperature >= (desired_temperature + DELTA):
+                heating("electrical", False)
+                heating("gas", False)
+            elif current_temperature < (desired_temperature - DELTA):
                 if electrical_heating_switch:
-                    # Keep the house in balance with electrical heating
-                    heating("electrical", "on")
-                    heating("gas", "off")
-                else:
-                    heating("electrical", "off")
-
-                    # If electrical is off use the gas heating
-                    if gas_heating_switch:
-                        heating("gas", "on")
-                    else:
-                        heating("gas", "off")
-
-            if (desired_temperature - GAS_DELTA) >= current_temperature:
-                if electrical_heating_switch:
-                    heating("electrical", "on")
-                else:
-                    heating("electrical", "off")
+                    heating("electrical", True)
                 if gas_heating_switch:
-                    heating("gas", "on")
-                else:
-                    heating("gas", "off")
+                    heating("gas", True)
+           
+            if not electrical_heating_switch:
+                heating("electrical", False)
+            if not gas_heating_switch:
+                heating("gas", False)
 
             sleep(POLL_PERIOD_SECONDS)
             if killer.killed:
