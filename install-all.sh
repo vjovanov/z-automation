@@ -3,10 +3,6 @@
 PI_HOME="/home/pi/"
 CODE_HOME="$PI_HOME/z-automation/"
 
-mkdir $PI_HOME/heating
-echo 0 > $PI_HOME/heating/electrical-heating-switch
-echo 0 > $PI_HOME/heating/gas-heating-switch
-
 hassbian-config install razberry
 apt install nmap
 apt install libudev-dev
@@ -28,4 +24,10 @@ cp "$PI_HOME/z-automation/relay-control.sh" /etc/init.d/relay-control-daemon
 chmod +x /etc/init.d/relay-control-daemon
 update-rc.d relay-control-daemon defaults
 service relay-control-daemon install
+
+# Heating
+cp "$PI_HOME/z-automation/heating.sh" /etc/init.d/heating-daemon
+chmod +x /etc/init.d/heating-daemon
+update-rc.d heating-daemon defaults
+service heating-daemon install
 
