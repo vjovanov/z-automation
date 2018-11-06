@@ -5,7 +5,7 @@ default_view:
     - sun.sun
     - sensor.average_temperature
     - sensor.outside_temperature
-    - sensor.aeotec_zw095_home_energy_meter_gen5_power
+    - sensor.power_consumption
     - group.heating_control
     - group.weather
 
@@ -89,6 +89,7 @@ electrics:
    name: Elektrika
    icon: mdi:flash
    entities:
+     - sensor.power_consumption
      - sensor.aeotec_zw095_home_energy_meter_gen5_energy_9
      - sensor.aeotec_zw095_home_energy_meter_gen5_energy_10
      - sensor.aeotec_zw095_home_energy_meter_gen5_energy_11

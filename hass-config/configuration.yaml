@@ -58,10 +58,6 @@ map:
 # Track the sun
 sun:
 
-# Weather prediction
-sensor:
-  - platform: yr
-
 # Text to speech
 tts:
   - platform: google
@@ -127,6 +123,11 @@ sensor:
         friendly_name: "Spoljna"
         unit_of_measurement: "°C"
         value_template: "{{ states.sensor.dark_sky_temperature.state }}"
+      # until we flip the sensors
+      power_consumption:
+        friendly_name: "Power Consumption"
+        unit_of_measurement: "W"
+        value_template: "{{ (float(states.aeotec_zw095_home_energy_meter_gen5_power_10.state) + float(states.sensor.aeotec_zw095_home_energy_meter_gen5_power_11.state) + float(states.sensor.aeotec_zw095_home_energy_meter_gen5_power_12.state))) | round(2) }}"
 
 zwave:
   usb_path: /dev/ttyAMA0
