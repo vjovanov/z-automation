@@ -12,6 +12,7 @@ electrical_heating_switch = False
 gas_heating_on = False
 electrical_heating_on = False
 relay_dir = None
+pid_file = None
 
 
 def relay_state(value):
@@ -94,7 +95,7 @@ def main():
             "thermostat data.\n")
         sys.exit(1)
     
-    global relay_dir
+    global pid_file, relay_dir
     pid_file = sys.argv[1]
     relay_dir = sys.argv[3]
     if not os.path.isdir(relay_dir):
