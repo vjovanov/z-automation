@@ -38,8 +38,8 @@ weather:
      - sensor.dark_sky_cloud_cover
      - sensor.dark_sky_humidity
      - sensor.dark_sky_pressure
-     - sensor.dark_sky_temperature_max
-     - sensor.dark_sky_temperature_min
+     - sensor.dark_sky_temperature_high
+     - sensor.dark_sky_temperature_low
      - sensor.dark_sky_precip_type
      - sensor.dark_nearest_storm_distanCe
 
