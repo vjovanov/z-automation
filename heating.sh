@@ -22,7 +22,7 @@ PRE_EXEC="/usr/bin/python3"
 CONFIG_DIR="/var/opt/heating"
 PID_FILE="/var/run/heating.pid"
 BINARY="$CODE_HOME/heating.py"
-FLAGS="$PID_FILE $RELAY_DIR"
+FLAGS="$PID_FILE $HEATING_DIR $RELAY_DIR"
 REDIRECT="> $CONFIG_DIR/heating.log 2>&1"
 SERVICE_NAME="Heating Control"
 
@@ -55,13 +55,13 @@ stop() {
 install() {
     echo "Installing $SERVICE_NAME Daemon (heating)"
 
-    echo "Creating heating files in $RELAY_DIR"
-    mkdir $HEATING_DIR
+    echo "Creating heating files in $HEATING_DIR"
+    mkdir -p $HEATING_DIR
     chown $RUN_AS:homeassistant "$HEATING_DIR"
     echo 0 > $HEATING_DIR/electrical-heating-switch
-    chown $RUN_AS:homeassistant "$$HEATING_DIR/electrical-heating-switch"
+    chown $RUN_AS:homeassistant "$HEATING_DIR/electrical-heating-switch"
     echo 0 > $PI_HOME/heating/gas-heating-switch
-    chown $RUN_AS:homeassistant "$$HEATING_DIR/gas-heating-switch"
+    chown $RUN_AS:homeassistant "$HEATING_DIR/gas-heating-switch"
 
     echo "Creating a config dir $CONFIG_DIR"
     mkdir -p $CONFIG_DIR
