@@ -56,10 +56,10 @@ install() {
 
     echo "Creating relay files in $RELAY_DIR"
     mkdir -p $RELAY_DIR
-    chown $RUN_AS $RELAY_DIR
+    chown $RUN_AS:homeassistant $RELAY_DIR
     for i in 0 1 2 3 4 5 6 7; do
        echo "0" > "$RELAY_DIR/$i";
-       chown $RUN_AS "$RELAY_DIR/$i"
+       chown $RUN_AS:homeassistant "$RELAY_DIR/$i"
     done;
 
     echo "Creating a config dir $CONFIG_DIR"

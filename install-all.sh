@@ -30,4 +30,3 @@ cp "$PI_HOME/z-automation/heating.sh" /etc/init.d/heating-daemon
 chmod +x /etc/init.d/heating-daemon
 update-rc.d heating-daemon defaults
 service heating-daemon install
-
