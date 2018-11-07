@@ -1,8 +1,8 @@
 import signal
 import sys
 from time import sleep
-
 import os
+from contextlib import contextmanager
 
 POLL_PERIOD_SECONDS = 1
 DELTA = 0.5
@@ -15,6 +15,31 @@ relay_dir = None
 pid_file = None
 
 
+@contextmanager
+def atomic_write(filepath, binary=False, fsync=False):
+    """ Writeable file object that atomically updates a file (using a temporary file).
+
+    :param filepath: the file path to be opened
+    :param binary: whether to open the file in a binary mode instead of textual
+    :param fsync: whether to force write the file to disk
+    """
+
+    tmppath = filepath + '~'
+    while os.path.isfile(tmppath):
+        tmppath += '~'
+    try:
+        with open(tmppath, 'wb' if binary else 'w') as file:
+            yield file
+            if fsync:
+                file.flush()
+                os.fsync(file.fileno())
+        os.rename(tmppath, filepath)
+    finally:
+        try:
+            os.remove(tmppath)
+        except (IOError, OSError):
+            pass
+
 def relay_state(value):
     return '1' if value == True else '0'
 
@@ -22,24 +47,25 @@ def heating(heating_type, state):
     if heating_type is 'electrical':
         global electrical_heating_on
         electrical_heating_on = state
-    
+
     if heating_type is 'gas':
         global gas_heating_on
         gas_heating_on = state
-    
-    # pump works if any heating is on
+
+    # race condition: pump works before any heating is on
     if gas_heating_on or electrical_heating_on:
-        with open(os.path.join(relay_dir, '0'), 'w') as r0:
+        with atomic_write(os.path.join(relay_dir, '0')) as r0:
             r0.write(relay_state(True))
 
-    with open(os.path.join(relay_dir, '1'), 'w') as r1:
+    with atomic_write(os.path.join(relay_dir, '1')) as r1:
             r1.write(relay_state(gas_heating_on))
 
-    with open(os.path.join(relay_dir, '2'), 'w') as r2:
+    with atomic_write(os.path.join(relay_dir, '2')) as r2:
             r2.write(relay_state(electrical_heating_on))
-    
+
+    # race condition: pump is off after heating is turned off
     if not (gas_heating_on or electrical_heating_on):
-        with open(os.path.join(relay_dir, '0'), 'w') as r0:
+        with atomic_write(os.path.join(relay_dir, '0')) as r0:
             r0.write(relay_state(False))
 
 
@@ -94,7 +120,7 @@ def main():
             "heating.py expects three arguments pointing to the PID file, to the relay dir, and to the folder with "
             "thermostat data.\n")
         sys.exit(1)
-    
+
     global pid_file, relay_dir
     pid_file = sys.argv[1]
     relay_dir = sys.argv[3]
@@ -124,7 +150,7 @@ def main():
                     heating("electrical", True)
                 if gas_heating_switch:
                     heating("gas", True)
-           
+
             if not electrical_heating_switch:
                 heating("electrical", False)
             if not gas_heating_switch:
