@@ -25,10 +25,7 @@ frontend:
 config:
 
 http:
-  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-  #base_url: 212.200.76.10:26681
   server_port: 26681
-  api_password: !secret http_password
 
 # Checks for available updates
 # Note: This component will send some information about your system to
