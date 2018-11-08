@@ -86,7 +86,6 @@ class GracefulKiller:
 
     # noinspection PyUnusedLocal
     def exit_gracefully(self, signum, frame):
-        reset_state(pid_file)
         self.killed = True
         reset_state(self.pid_file)
 

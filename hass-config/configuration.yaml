@@ -39,12 +39,87 @@ updater:
 # Discover some devices automatically
 discovery:
 
-# Allows you to issue voice commands from the frontend in enabled browsers
-# conversation:
-recorder:
-
 # Enables support for tracking state changes over time
+recorder:
+  db_url: !secret db_url
+  purge_keep_days: 700
+  include:
+    entities:
+      - sensor.cpu_temperature
+      - sensor.available_phisical_memory
+      - sensor.available_disk_space
+      - sensor.power_consumption
+      - input_number.desired_temperature
+      - switch.electrical_heating
+      - switch.gas_heating
+      - sensor.aeotec_zw100_multisensor_6_temperature_3
+      - sensor.aeotec_zw100_multisensor_6_relative_humidity_5
+      - sensor.aeotec_zw100_multisensor_6_luminance_4
+      - sensor.aeotec_zw100_multisensor_6_alarm_level_5
+      - sensor.aeotec_zw100_multisensor_6_alarm_type_5
+      - sensor.aeotec_zw100_multisensor_6_burglar_5
+      - sensor.aeotec_zw100_multisensor_6_temperature_2
+      - sensor.aeotec_zw100_multisensor_6_relative_humidity_4
+      - sensor.aeotec_zw100_multisensor_6_luminance_3
+      - sensor.aeotec_zw100_multisensor_6_alarm_level_4
+      - sensor.aeotec_zw100_multisensor_6_alarm_type_4
+      - sensor.aeotec_zw100_multisensor_6_burglar_4
+      - sensor.google_wifi_status
+      - sensor.average_temperature
+      - sensor.outside_temperature
+
+
 history:
+  include:
+    entities:
+      - sensor.cpu_temperature
+      - sensor.available_phisical_memory
+      - sensor.available_disk_space
+      - sensor.power_consumption
+      - input_number.desired_temperature
+      - switch.electrical_heating
+      - switch.gas_heating
+      - sensor.aeotec_zw100_multisensor_6_temperature_3
+      - sensor.aeotec_zw100_multisensor_6_relative_humidity_5
+      - sensor.aeotec_zw100_multisensor_6_luminance_4
+      - sensor.aeotec_zw100_multisensor_6_alarm_level_5
+      - sensor.aeotec_zw100_multisensor_6_alarm_type_5
+      - sensor.aeotec_zw100_multisensor_6_burglar_5
+      - sensor.aeotec_zw100_multisensor_6_temperature_2
+      - sensor.aeotec_zw100_multisensor_6_relative_humidity_4
+      - sensor.aeotec_zw100_multisensor_6_luminance_3
+      - sensor.aeotec_zw100_multisensor_6_alarm_level_4
+      - sensor.aeotec_zw100_multisensor_6_alarm_type_4
+      - sensor.aeotec_zw100_multisensor_6_burglar_4
+      - sensor.google_wifi_status
+      - sensor.average_temperature
+      - sensor.outside_temperature
+
+history_graph:
+  temperature:
+    name: Temperatura
+    entities:
+      - sensor.average_temperature
+      - sensor.outside_temperature
+    hours_to_show: 24
+    refresh: 60
+
+  humidity:
+    name: Vlaznost
+    entities:
+      - sensor.aeotec_zw100_multisensor_6_relative_humidity_4
+      - sensor.aeotec_zw100_multisensor_6_relative_humidity_5
+    hours_to_show: 24
+    refresh: 60
+
+  heating:
+    name: Grejanje
+    entities:
+      - input_number.desired_temperature
+      - switch.electrical_heating
+      - switch.gas_heating
+    hours_to_show: 72
+    refresh: 60
 
 # View all events in a logbook
 logbook:
@@ -58,6 +133,39 @@ sun:
 # Text to speech
 tts:
   - platform: google
+
+binary_sensor:
+  - platform: command_line
+    name: Heating service
+    command: '/bin/systemctl is-active heating-daemon'
+    payload_on: 'active'
+    payload_off: 'inactive'
+    scan_interval: 15
+  - platform: command_line
+    name: Relay service
+    command: '/bin/systemctl is-active relay-control-daemon'
+    payload_on: 'active'
+    payload_off: 'inactive'
+    scan_interval: 15
+  - platform: command_line
+    name: Pumpa grejanja
+    command: '/bin/cat /home/pi/relays/0'
+    payload_on: '1'
+    payload_off: '0'
+    scan_interval: 15
+  - platform: command_line
+    name: Elektricno grejanje
+    command: '/bin/cat /home/pi/relays/2'
+    payload_on: '1'
+    payload_off: '0'
+    scan_interval: 15
+  - platform: command_line
+    name: Grejanje na naftu
+    command: '/bin/cat /home/pi/relays/1'
+    payload_on: '1'
+    payload_off: '0'
+    scan_interval: 15
+ 
 
 sensor:
   - platform: yr
@@ -80,6 +188,8 @@ sensor:
   - platform: command_line
     command: python3 -c "import requests; print(requests.get('https://pypi.python.org/pypi/homeassistant/json').json()['info']['version'])"
     name: HA Latest Release
+    scan_interval: 3600
+    command_timeout: 60
   - platform: command_line
     command: /srv/homeassistant/bin/hass --version
     name: HA Current Version
@@ -100,7 +210,7 @@ sensor:
       - temperature_min
       - precip_type
       - nearest_storm_distance
-    update_interval: '00:02:30'
+    update_interval: '00:05:00'
   - platform: google_wifi
     host: 192.168.86.1
     monitored_conditions:
@@ -162,7 +272,7 @@ switch:
 
 device_tracker:
   - platform: nmap_tracker
-    hosts: 192.168.1.1/24
+    hosts: 192.168.86.1/24
     exclude:
      - 192.168.86.2
 

@@ -22,8 +22,24 @@ systems_view:
    icon: mdi:flash
    entities:
      - group.electrics
+     - group.heating_monitoring
      - group.wifi
      - group.pi
+
+history_view:
+   name: Grafikoni
+   view: yes
+   icon: mdi:history
+   entities:
+     - group.ambience_history 
+
+ambience_history:
+   name: Ambijent 
+   icon: mdi:thermometer-lines
+   entities:
+     - history_graph.grejanje
+     - history_graph.temperatura
+     - history_graph.vlaznost
 
 weather:
    name: Vreme Napolju
@@ -91,6 +107,15 @@ electrics:
    entities:
      - sensor.power_consumption
 
+heating_monitoring:
+   name: Rad grejanja
+   icon: mdi:fire
+   entities:
+     - binary_sensor.pumpa_grejanja
+     - binary_sensor.elektricno_grejanje
+     - binary_sensor.grejanje_na_naftu
+
+
 pi:
   name: Raspberry Pi
   icon: mdi:dektop-classic
@@ -101,3 +126,6 @@ pi:
      - sensor.pi_uptime
      - sensor.ha_current_version
      - sensor.ha_latest_release
+     - binary_sensor.relay_service
+     - binary_sensor.heating_service
+

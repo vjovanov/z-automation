@@ -25,7 +25,6 @@ BINARY="$CODE_HOME/heating.py"
 FLAGS="$PID_FILE $HEATING_DIR $RELAY_DIR"
 REDIRECT="> $CONFIG_DIR/heating.log 2>&1"
 SERVICE_NAME="Heating Control"
-
 start() {
   if [ -f ${PID_FILE} ] && kill -0 $(cat ${PID_FILE}) 2> /dev/null; then
     /bin/echo 'Service already running' >&2
@@ -35,7 +34,7 @@ start() {
   /bin/echo "999999" > ${PID_FILE}
   chown $RUN_AS $PID_FILE
 
-  /bin/echo 'Starting service…' >&2
+  /bin/echo 'Starting service...' >&2
   local CMD="$PRE_EXEC $BINARY $FLAGS $REDIRECT;"
   /bin/su -c "$CMD" ${RUN_AS} &
   /bin/echo 'Service started' >&2
@@ -77,9 +76,6 @@ uninstall() {
 
     echo "Removing $PID_FILE"
     rm -fv "$PID_FILE"
-    echo "Removing relay files in $RELAY_DIR"
-    rm -rf "$RELAY_DIR"
-    echo "Notice: The config directory has not been removed"
     echo ${CONFIG_DIR}
     update-rc.d -f heating-daemon remove
     rm -fv "$0"
@@ -107,6 +103,3 @@ case "$1" in
   *)
     echo "Usage: $0 {start|stop|restart|install|uninstall}"
 esac
-#/bin/sh
-
-exit 1
