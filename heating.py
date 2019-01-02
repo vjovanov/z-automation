@@ -104,7 +104,10 @@ def read_state(relay_dir, thermostat_dir):
         desired_temperature = float(content_file.read())
 
     with open(os.path.join(thermostat_dir, 'current-temperature'), 'r') as content_file:
-        current_temperature = float(content_file.read())
+        try:
+            current_temperature = float(content_file.read())
+        except ValueError as e:
+            print("warning: current_temperature is not a float. Got " + content_file.read())
 
     with open(os.path.join(relay_dir, '1'), 'r') as content_file:
         gas_heating_on = int(content_file.read()) == 1

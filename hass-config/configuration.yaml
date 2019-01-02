@@ -176,8 +176,8 @@ sensor:
     value_template: '{{ (value | multiply(0.001) | float) | round(1) }}'
   - platform: command_line
     name: Available Disk Space
-    command: "df -m --output=avail /  | tail -n 1 | sed 's/ *$//g' | sed 's/^ *//g'"
-    unit_of_measurement: "MB"
+    command: "df -m --output=avail / | grep -v Avail | awk '{printf \"%.2f\", $1/1024}'"
+    unit_of_measurement: "GB"
   - platform: command_line
     name: Available Phisical Memory
     command: "free -m | awk -v RS= '{print $10}'"
@@ -210,7 +210,12 @@ sensor:
       - temperature_min
       - precip_type
       - nearest_storm_distance
-    update_interval: '00:05:00'
+    update_interval:
+      days: 0
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
   - platform: google_wifi
     host: 192.168.86.1
     monitored_conditions:
