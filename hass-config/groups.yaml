@@ -44,6 +44,7 @@ ambience_history:
 weather:
    name: Vreme Napolju
    icon: mdi:weather-sunny
+   control: hidden
    entities:
      - sensor.dark_sky_summary
      - sensor.dark_sky_temperature
@@ -51,17 +52,13 @@ weather:
      - sensor.dark_sky_apparent_temperature
      - sensor.dark_sky_wind_speed
      - sensor.dark_sky_wind_bearing
-     - sensor.dark_sky_cloud_cover
      - sensor.dark_sky_humidity
      - sensor.dark_sky_pressure
-     - sensor.dark_sky_temperature_high
-     - sensor.dark_sky_temperature_low
-     - sensor.dark_sky_precip_type
-     - sensor.dark_nearest_storm_distanCe
 
 wifi:
    name: Wi-Fi
    icon: mdi:wifi
+   control: hidden
    entities:
       - sensor.google_wifi_status
       - sensor.google_wifi_uptime
@@ -73,6 +70,7 @@ wifi:
 underground_living_room:
    name: Dnevna Soba Suteren
    icon: mdi:account-multiple
+   control: hidden
    entities:
     - sensor.aeotec_zw100_multisensor_6_temperature_2
     - sensor.aeotec_zw100_multisensor_6_relative_humidity_4
@@ -84,6 +82,7 @@ underground_living_room:
 living_room:
    name: Dnevna Soba
    icon: mdi:account-multiple
+   control: hidden
    entities:
      - sensor.aeotec_zw100_multisensor_6_temperature_3
      - sensor.aeotec_zw100_multisensor_6_relative_humidity_5
@@ -104,12 +103,14 @@ heating_control:
 electrics:
    name: Elektrika
    icon: mdi:flash
+   control: hidden
    entities:
      - sensor.power_consumption
 
 heating_monitoring:
    name: Rad grejanja
    icon: mdi:fire
+   control: hidden
    entities:
      - binary_sensor.pumpa_grejanja
      - binary_sensor.elektricno_grejanje
@@ -119,6 +120,7 @@ heating_monitoring:
 pi:
   name: Raspberry Pi
   icon: mdi:dektop-classic
+  control: hidden
   entities:
      - sensor.cpu_temperature
      - sensor.available_phisical_memory

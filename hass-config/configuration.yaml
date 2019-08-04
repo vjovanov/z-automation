@@ -132,7 +132,7 @@ sun:
 
 # Text to speech
 tts:
-  - platform: google
+  - platform: google_translate
 
 binary_sensor:
   - platform: command_line
@@ -203,14 +203,9 @@ sensor:
       - apparent_temperature
       - wind_speed
       - wind_bearing
-      - cloud_cover
       - humidity
       - pressure
-      - temperature_max
-      - temperature_min
-      - precip_type
-      - nearest_storm_distance
-    update_interval:
+    scan_interval:
       days: 0
       hours: 0
       minutes: 5
