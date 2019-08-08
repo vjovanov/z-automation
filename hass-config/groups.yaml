@@ -15,6 +15,7 @@ home_state_view:
   entities:
     - group.living_room
     - group.underground_living_room
+    - group.hallway_floor
 
 systems_view:
    name: Sistemi
@@ -75,8 +76,6 @@ underground_living_room:
     - sensor.aeotec_zw100_multisensor_6_temperature_2
     - sensor.aeotec_zw100_multisensor_6_relative_humidity_4
     - sensor.aeotec_zw100_multisensor_6_luminance_3
-    - sensor.aeotec_zw100_multisensor_6_alarm_level_4
-    - sensor.aeotec_zw100_multisensor_6_alarm_type_4
     - sensor.aeotec_zw100_multisensor_6_burglar_4
 
 living_room:
@@ -87,9 +86,19 @@ living_room:
      - sensor.aeotec_zw100_multisensor_6_temperature_3
      - sensor.aeotec_zw100_multisensor_6_relative_humidity_5
      - sensor.aeotec_zw100_multisensor_6_luminance_4
-     - sensor.aeotec_zw100_multisensor_6_alarm_level_5
-     - sensor.aeotec_zw100_multisensor_6_alarm_type_5
      - sensor.aeotec_zw100_multisensor_6_burglar_5
+
+hallway_floor:
+   name: Hodnik na Spratu
+   icon: mdi:account-multiple
+   control: hidden
+   entities:
+     - sensor.aeon_labs_zw100_multisensor_6_temperature
+     - sensor.aeon_labs_zw100_multisensor_6_relative_humidity
+     - sensor.aeon_labs_zw100_multisensor_6_luminance
+     - sensor.aeon_labs_zw100_multisensor_6_burglar
+     - sensor.aeotec_zw100_multisensor_6_co2_level
+
 
 heating_control:
   name: Kontrola Grejanja
