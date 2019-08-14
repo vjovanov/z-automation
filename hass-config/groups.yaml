@@ -15,7 +15,6 @@ home_state_view:
   entities:
     - group.living_room
     - group.underground_living_room
-    - group.hallway_floor
 
 systems_view:
    name: Sistemi
@@ -97,7 +96,6 @@ hallway_floor:
      - sensor.aeon_labs_zw100_multisensor_6_relative_humidity
      - sensor.aeon_labs_zw100_multisensor_6_luminance
      - sensor.aeon_labs_zw100_multisensor_6_burglar
-     - sensor.aeotec_zw100_multisensor_6_co2_level
 
 
 heating_control:

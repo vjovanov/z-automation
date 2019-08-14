@@ -225,7 +225,7 @@ sensor:
       average_temperature:
         friendly_name: "Unutrasnja"
         unit_of_measurement: "°C"
-        value_template: "{{ (float(states.sensor.aeotec_zw100_multisensor_6_temperature_3.state) + float(states.sensor.aeotec_zw100_multisensor_6_temperature_2.state) + float(states.sensor.aeon_labs_zw100_multisensor_6_temperature)) / 3 | round(2) }}"
+        value_template: "{{ (float(states.sensor.aeotec_zw100_multisensor_6_temperature_3.state)) / 1 | round(1) }}"
       outside_temperature:
         friendly_name: "Spoljna"
         unit_of_measurement: "°C"
@@ -238,7 +238,7 @@ sensor:
 
 zwave:
   usb_path: /dev/ttyAMA0
-  polling_interval: 30000
+  polling_interval: 60000
 
 input_number:
   desired_temperature:
@@ -270,12 +270,12 @@ switch:
       value_template: '{{ value == "1" }}'
       friendly_name: Grejanje na naftu
 
-device_tracker:
-  - platform: nmap_tracker
-    hosts: 192.168.86.1/24
-    exclude:
-     - 192.168.86.2
-
+panel_custom:
+  - name: zwavegraph2
+    sidebar_title: Z-Wave Graph
+    sidebar_icon: mdi:access-point-network
+    url_path: zwave
+       
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
