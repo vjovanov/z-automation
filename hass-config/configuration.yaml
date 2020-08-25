@@ -67,6 +67,10 @@ recorder:
       - sensor.google_wifi_status
       - sensor.average_temperature
       - sensor.outside_temperature
+      - binary_sensor.internet
+      - sensor.speedtest_download
+      - sensor.speedtest_upload
+      - sensor.speedtest_ping
 
 
 history:
@@ -134,6 +138,12 @@ sun:
 tts:
   - platform: google_translate
 
+system_health:
+        
+speedtestdotnet:
+  scan_interval:
+    minutes: 15
+
 binary_sensor:
   - platform: command_line
     name: Heating service
@@ -165,7 +175,11 @@ binary_sensor:
     payload_on: '1'
     payload_off: '0'
     scan_interval: 15
- 
+  - platform: ping
+    name: Internet
+    host: 8.8.8.8
+    scan_interval: 
+      minutes: 1
 
 sensor:
   - platform: yr
@@ -252,6 +266,7 @@ input_number:
 shell_command:
   set_desired_temperature: /bin/bash -c "echo '{{ states.input_number.desired_temperature.state }}' > /home/pi/heating/desired-temperature"
   set_current_temperature: /bin/bash -c "echo '{{ states.sensor.average_temperature.state }}' > /home/pi/heating/current-temperature"
+  report_motion: /bin/bash /home/pi/alarm/report_motion.sh
 
 switch:
   platform: command_line
@@ -269,6 +284,14 @@ switch:
       command_state: "cat /home/pi/heating/gas-heating-switch"
       value_template: '{{ value == "1" }}'
       friendly_name: Grejanje na naftu
+   
+    alarm:
+      command_on: "echo 1 > /home/pi/alarm/switch"
+      command_off: "echo 0 > /home/pi/alarm/switch"
+      command_state: "cat /home/pi/alarm/switch"
+      value_template: '{{ value == "1" }}'
+      friendly_name: Alarm
+
 
 panel_custom:
   - name: zwavegraph2

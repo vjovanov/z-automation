@@ -2,6 +2,8 @@ sensor.dark_sky_temperature:
   friendly_name: Spoljna Temperatura
 switch.gas_heating:
   icon: mdi:fire
+switch.alarm:
+  icon: mdi:security
 sensor.aeotec_zw100_multisensor_6_relative_humidity_4:
   friendly_name: "Relativna vla\u017Enost"
   icon: mdi:water-percent

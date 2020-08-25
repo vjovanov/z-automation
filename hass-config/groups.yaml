@@ -21,8 +21,10 @@ systems_view:
    view: yes
    icon: mdi:flash
    entities:
+     - group.alarm_control
      - group.electrics
      - group.heating_monitoring
+     - group.internet
      - group.wifi
      - group.pi
 
@@ -67,6 +69,16 @@ wifi:
       - sensor.google_wifi_current_version
       - sensor.google_wifi_new_version
 
+internet:
+   name: Internet
+   icon: mdi:speed
+   control: hidden
+   entities:
+      - binary_sensor.internet
+      - sensor.speedtest_download
+      - sensor.speedtest_upload
+      - sensor.speedtest_ping
+
 underground_living_room:
    name: Dnevna Soba Suteren
    icon: mdi:account-multiple
@@ -106,6 +118,13 @@ heating_control:
      - input_number.desired_temperature
      - switch.electrical_heating
      - switch.gas_heating
+
+alarm_control:
+  name: Alarm
+  icon: mdi:security
+  control: hidden
+  entities:
+     - switch.alarm
 
 electrics:
    name: Elektrika
