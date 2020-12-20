@@ -3,6 +3,7 @@ import sys
 from time import sleep
 import os
 from contextlib import contextmanager
+from datetime import datetime, time
 
 POLL_PERIOD_SECONDS = 1
 DELTA = 0.5
@@ -11,8 +12,21 @@ gas_heating_switch = False
 electrical_heating_switch = False
 gas_heating_on = False
 electrical_heating_on = False
+only_on_cheap_electricty = False
 relay_dir = None
 pid_file = None
+
+def is_time_between(begin_time, end_time, check_time=None):
+    # If check time is not given, default to current UTC time
+    check_time = check_time or datetime.now().time()
+    if begin_time < end_time:
+        return check_time >= begin_time and check_time <= end_time
+    else: # crosses midnight
+        return check_time >= begin_time or check_time <= end_time
+
+def allowed_based_on_tarif():
+    global only_on_cheap_electricty
+    return (not only_on_cheap_electricty) or is_time_between(time(0,1), time(6,0))
 
 
 @contextmanager
@@ -93,12 +107,16 @@ desired_temperature = -1.0
 current_temperature = -1.0
 
 def read_state(relay_dir, thermostat_dir):
-    global gas_heating_switch, electrical_heating_switch, desired_temperature, current_temperature, electrical_heating_on, gas_heating_on
+    global gas_heating_switch, electrical_heating_switch, desired_temperature, current_temperature, electrical_heating_on, gas_heating_on, only_on_cheap_electricty
     with open(os.path.join(thermostat_dir, 'gas-heating-switch'), 'r') as content_file:
         gas_heating_switch = int(content_file.read()) == 1
 
     with open(os.path.join(thermostat_dir, 'electrical-heating-switch'), 'r') as content_file:
         electrical_heating_switch = int(content_file.read()) == 1
+
+    with open(os.path.join(thermostat_dir, 'cheap-electricity-heating'), 'r') as content_file:
+        file_content = content_file.read()
+        only_on_cheap_electricty = int(file_content.strip()) == 1
 
     with open(os.path.join(thermostat_dir, 'desired-temperature'), 'r') as content_file:
         desired_temperature = float(content_file.read())
@@ -148,12 +166,13 @@ def main():
                 heating("electrical", False)
                 heating("gas", False)
             elif current_temperature < (desired_temperature - DELTA):
-                if electrical_heating_switch:
+                if electrical_heating_switch and allowed_based_on_tarif():
                     heating("electrical", True)
                 if gas_heating_switch:
                     heating("gas", True)
 
-            if not electrical_heating_switch:
+            # Detect switch changes even when temperature in range
+            if not (electrical_heating_switch and allowed_based_on_tarif()):
                 heating("electrical", False)
             if not gas_heating_switch:
                 heating("gas", False)

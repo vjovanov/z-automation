@@ -10,19 +10,26 @@
 
 # /etc/init.d Service Script for Zlatibor
 # Created with: https://gist.github.com/naholyr/4275302#file-new-service-sh
-PRE_EXEC=""
+PRE_EXEC="source /srv/homeassistant/bin/activate;"
 RUN_AS="homeassistant"
 PID_FILE="/var/run/hass.pid"
 SERVICE_NAME="Home Assistant"
-CONFIG_DIR="/var/opt/homeassistant"
-FLAGS="-v --config $CONFIG_DIR --pid-file $PID_FILE --daemon"
+CONFIG_DIR="/home/homeassistant/.homeassistant"
+FLAGS="-v --config $CONFIG_DIR --pid-file $PID_FILE --daemon --open-ui"
 REDIRECT="> $CONFIG_DIR/home-assistant.log 2>&1"
-
+set -x
 start() {
   if [ -f $PID_FILE ] && kill -0 $(cat $PID_FILE) 2> /dev/null; then
     echo 'Service already running' >&2
     return 1
   fi
+
+  # Home assistant expects the file here after reboot.
+  if [ ! -f $PID_FILE ]; then
+    echo "999999" > $PID_FILE
+    chown $RUN_AS $PID_FILE
+  fi
+
   echo 'Starting service…' >&2
   local CMD="$PRE_EXEC /srv/homeassistant/bin/hass $FLAGS $REDIRECT;"
   su -c "$CMD" $RUN_AS

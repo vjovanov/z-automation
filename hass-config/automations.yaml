@@ -7,18 +7,18 @@
 - alias: run_set_current_temperature
   trigger:
     platform: state
-    entity_id: sensor.aeotec_zw100_multisensor_6_temperature_3 
+    entity_id: sensor.living_room_multisensor_6_temperature
   action:
     service: shell_command.set_current_temperature
 - alias: run_report_motion_living_room
   trigger:
     platform: state
-    entity_id: sensor.aeotec_zw100_multisensor_6_burglar_5 
+    entity_id: sensor.living_room_multisensor_6_burglar
   action:
     service: shell_command.report_motion
 - alias: run_report_motion_living_room_basement
   trigger:
     platform: state
-    entity_id: sensor.aeotec_zw100_multisensor_6_burglar_4
+    entity_id: sensor.first_floor__multisensor_6_burglar
   action:
     service: shell_command.report_motion

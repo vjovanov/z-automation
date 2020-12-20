@@ -1,3 +1,6 @@
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
 homeassistant:
   # Name of the location where Home Assistant is running
   name: Zlatibor
@@ -15,131 +18,6 @@ homeassistant:
   # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: Europe/Belgrade
 
-  # Customization file
-  customize: !include customize.yaml
-
-# Enables the frontend
-frontend:
-
-# Enables configuration UI
-config:
-
-http:
-  server_port: 26681
-
-# Checks for available updates
-# Note: This component will send some information about your system to
-# the developers to assist with development of Home Assistant.
-# For more information, please see:
-# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
-updater:
-  # Optional, allows Home Assistant developers to focus on popular components.
-  include_used_components: true
-
-# Discover some devices automatically
-discovery:
-
-# Enables support for tracking state changes over time
-recorder:
-  db_url: !secret db_url
-  purge_keep_days: 700
-  include:
-    entities:
-      - sensor.cpu_temperature
-      - sensor.available_phisical_memory
-      - sensor.available_disk_space
-      - sensor.power_consumption
-      - input_number.desired_temperature
-      - switch.electrical_heating
-      - switch.gas_heating
-      - sensor.aeotec_zw100_multisensor_6_temperature_3
-      - sensor.aeotec_zw100_multisensor_6_relative_humidity_5
-      - sensor.aeotec_zw100_multisensor_6_luminance_4
-      - sensor.aeotec_zw100_multisensor_6_alarm_level_5
-      - sensor.aeotec_zw100_multisensor_6_alarm_type_5
-      - sensor.aeotec_zw100_multisensor_6_burglar_5
-      - sensor.aeotec_zw100_multisensor_6_temperature_2
-      - sensor.aeotec_zw100_multisensor_6_relative_humidity_4
-      - sensor.aeotec_zw100_multisensor_6_luminance_3
-      - sensor.aeotec_zw100_multisensor_6_alarm_level_4
-      - sensor.aeotec_zw100_multisensor_6_alarm_type_4
-      - sensor.aeotec_zw100_multisensor_6_burglar_4
-      - sensor.google_wifi_status
-      - sensor.average_temperature
-      - sensor.outside_temperature
-      - binary_sensor.internet
-      - sensor.speedtest_download
-      - sensor.speedtest_upload
-      - sensor.speedtest_ping
-
-
-history:
-  include:
-    entities:
-      - sensor.cpu_temperature
-      - sensor.available_phisical_memory
-      - sensor.available_disk_space
-      - sensor.power_consumption
-      - input_number.desired_temperature
-      - switch.electrical_heating
-      - switch.gas_heating
-      - sensor.aeotec_zw100_multisensor_6_temperature_3
-      - sensor.aeotec_zw100_multisensor_6_relative_humidity_5
-      - sensor.aeotec_zw100_multisensor_6_luminance_4
-      - sensor.aeotec_zw100_multisensor_6_alarm_level_5
-      - sensor.aeotec_zw100_multisensor_6_alarm_type_5
-      - sensor.aeotec_zw100_multisensor_6_burglar_5
-      - sensor.aeotec_zw100_multisensor_6_temperature_2
-      - sensor.aeotec_zw100_multisensor_6_relative_humidity_4
-      - sensor.aeotec_zw100_multisensor_6_luminance_3
-      - sensor.aeotec_zw100_multisensor_6_alarm_level_4
-      - sensor.aeotec_zw100_multisensor_6_alarm_type_4
-      - sensor.aeotec_zw100_multisensor_6_burglar_4
-      - sensor.google_wifi_status
-      - sensor.average_temperature
-      - sensor.outside_temperature
-
-history_graph:
-  temperature:
-    name: Temperatura
-    entities:
-      - sensor.average_temperature
-      - sensor.outside_temperature
-    hours_to_show: 24
-    refresh: 60
-
-  humidity:
-    name: Vlaznost
-    entities:
-      - sensor.aeotec_zw100_multisensor_6_relative_humidity_4
-      - sensor.aeotec_zw100_multisensor_6_relative_humidity_5
-    hours_to_show: 24
-    refresh: 60
-
-  heating:
-    name: Grejanje
-    entities:
-      - input_number.desired_temperature
-      - switch.electrical_heating
-      - switch.gas_heating
-    hours_to_show: 72
-    refresh: 60
-
-# View all events in a logbook
-logbook:
-
-# Enables a map showing the location of tracked devices
-map:
-
-# Track the sun
-sun:
-
-# Text to speech
-tts:
-  - platform: google_translate
-
-system_health:
-        
 speedtestdotnet:
   scan_interval:
     minutes: 15
@@ -158,19 +36,19 @@ binary_sensor:
     payload_off: 'inactive'
     scan_interval: 15
   - platform: command_line
-    name: Pumpa grejanja
+    name: Heating water pump
     command: '/bin/cat /home/pi/relays/0'
     payload_on: '1'
     payload_off: '0'
     scan_interval: 15
   - platform: command_line
-    name: Elektricno grejanje
+    name: Electrical heating
     command: '/bin/cat /home/pi/relays/2'
     payload_on: '1'
     payload_off: '0'
     scan_interval: 15
   - platform: command_line
-    name: Grejanje na naftu
+    name: Gas heating
     command: '/bin/cat /home/pi/relays/1'
     payload_on: '1'
     payload_off: '0'
@@ -182,20 +60,19 @@ binary_sensor:
       minutes: 1
 
 sensor:
-  - platform: yr
-  - platform: command_line
-    name: CPU Temperature
-    command: "cat /sys/class/thermal/thermal_zone0/temp"
-    unit_of_measurement: "°C"
-    value_template: '{{ (value | multiply(0.001) | float) | round(1) }}'
-  - platform: command_line
-    name: Available Disk Space
-    command: "df -m --output=avail / | grep -v Avail | awk '{printf \"%.2f\", $1/1024}'"
-    unit_of_measurement: "GB"
-  - platform: command_line
-    name: Available Phisical Memory
-    command: "free -m | awk -v RS= '{print $10}'"
-    unit_of_measurement: "MB"
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+      - type: disk_free
+      - type: disk_use
+      - type: memory_free
+      - type: memory_use_percent
+      - type: memory_use
+      - type: load_1m
+      - type: load_5m
+      - type: last_boot
+      - type: processor_use
+      - type: processor_temperature
   - platform: command_line
     name: Pi Uptime
     command: "uptime -p"
@@ -207,24 +84,6 @@ sensor:
   - platform: command_line
     command: /srv/homeassistant/bin/hass --version
     name: HA Current Version
-  - platform: darksky
-    api_key: bce958a356048b9226d52e608dce5a31
-    monitored_conditions:
-      - summary
-      - icon
-      - precip_probability
-      - temperature
-      - apparent_temperature
-      - wind_speed
-      - wind_bearing
-      - humidity
-      - pressure
-    scan_interval:
-      days: 0
-      hours: 0
-      minutes: 5
-      seconds: 0
-      milliseconds: 0
   - platform: google_wifi
     host: 192.168.86.1
     monitored_conditions:
@@ -234,30 +93,19 @@ sensor:
       - current_version
       - new_version
       - local_ip
-  - platform: template
-    sensors:
-      average_temperature:
-        friendly_name: "Unutrasnja"
-        unit_of_measurement: "°C"
-        value_template: "{{ (float(states.sensor.aeotec_zw100_multisensor_6_temperature_3.state)) / 1 | round(1) }}"
-      outside_temperature:
-        friendly_name: "Spoljna"
-        unit_of_measurement: "°C"
-        value_template: "{{ states.sensor.dark_sky_temperature.state }}"
-      # until we flip the sensors
-      power_consumption:
-        friendly_name: "Power Consumption"
-        unit_of_measurement: "W"
-        value_template: "{{ ((states.sensor.aeotec_zw095_home_energy_meter_gen5_power_10.state | float | abs) + (states.sensor.aeotec_zw095_home_energy_meter_gen5_power_11.state | float | abs) + (states.sensor.aeotec_zw095_home_energy_meter_gen5_power_12.state | float | abs)) | round(2) }}"
+
+http:
+   server_port: !secret server_port
 
 zwave:
-  usb_path: /dev/ttyAMA0
-  polling_interval: 60000
+   usb_path: /dev/ttyACM0
+   polling_interval: 60000        
+   network_key: !secret zwave_key
 
 input_number:
   desired_temperature:
     icon: mdi:temperature-celsius
-    name: Zeljena Temp.
+    name: Desired Temperature
     unit_of_measurement: "°C"
     min: 16
     max: 25
@@ -265,41 +113,55 @@ input_number:
 
 shell_command:
   set_desired_temperature: /bin/bash -c "echo '{{ states.input_number.desired_temperature.state }}' > /home/pi/heating/desired-temperature"
-  set_current_temperature: /bin/bash -c "echo '{{ states.sensor.average_temperature.state }}' > /home/pi/heating/current-temperature"
-  report_motion: /bin/bash /home/pi/alarm/report_motion.sh
-
+  set_current_temperature: /bin/bash -c "echo '{{ states.sensor.living_room_multisensor_6_temperature.state }}' > /home/pi/heating/current-temperature"
+  report_motion: !secret report_motion 
 switch:
   platform: command_line
   switches:
-    electrical_heating:
+    electrical_heating_switch:
       command_on: "echo 1 > /home/pi/heating/electrical-heating-switch"
       command_off: "echo 0 > /home/pi/heating/electrical-heating-switch"
       command_state: "cat /home/pi/heating/electrical-heating-switch"
       value_template: '{{ value == "1" }}'
-      friendly_name: Elektricno grejanje
-
-    gas_heating:
+      friendly_name: Electrical Heating
+    gas_heating_switch:
       command_on: "echo 1 > /home/pi/heating/gas-heating-switch"
       command_off: "echo 0 > /home/pi/heating/gas-heating-switch"
       command_state: "cat /home/pi/heating/gas-heating-switch"
       value_template: '{{ value == "1" }}'
-      friendly_name: Grejanje na naftu
-   
-    alarm:
+      friendly_name: Oil Heating
+    cheap_electricity_heating_switch:
+      command_on: "echo 1 > /home/pi/heating/cheap-electricity-heating"
+      command_off: "echo 0 > /home/pi/heating/cheap-electricity-heating"
+      command_state: "cat /home/pi/heating/cheap-electricity-heating"
+      value_template: '{{ value == "1" }}'
+      friendly_name: Cheap Electricity Heating
+    alarm_switch:
       command_on: "echo 1 > /home/pi/alarm/switch"
       command_off: "echo 0 > /home/pi/alarm/switch"
       command_state: "cat /home/pi/alarm/switch"
       value_template: '{{ value == "1" }}'
       friendly_name: Alarm
 
-
 panel_custom:
-  - name: zwavegraph2
+  - name: zwave-graph-panel
+    url_path: zwave-graph
     sidebar_title: Z-Wave Graph
-    sidebar_icon: mdi:access-point-network
-    url_path: zwave
-       
+    sidebar_icon: mdi:z-wave
+    module_url: /local/zwavegraph3.js
+    config:
+      # ranker - pick one: network-simplex, tight-tree, longest-path
+      ranker: network-simplex
+      # edge_visibility - pick one: relevant, all
+      edge_visibility: relevant
+      # grouping - pick one: z-wave, ungrouped
+      grouping: z-wave
+
+# Text to speech
+tts:
+  - platform: google_translate
+
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
-
+scene: !include scenes.yaml

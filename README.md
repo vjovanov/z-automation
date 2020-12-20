@@ -1,15 +1,12 @@
 # Instructions
 
-
 ## Upgrading Raspberry PI
-Upgrade the OS installation: 
+
+Upgrade home assistant:
 ```
-sudo hassbian-config upgrade hassbian
+sudo $HOME/z-automation/upgrade-hass.sh
 ```
-Upgrade home assistant: 
-```
-sudo hassbian-config upgrade homeassistant
-```
-For more details: 
+
+For more details:
 
   https://www.home-assistant.io/docs/installation/hassbian/installation/

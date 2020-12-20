@@ -25,6 +25,7 @@ BINARY="$CODE_HOME/heating.py"
 FLAGS="$PID_FILE $HEATING_DIR $RELAY_DIR"
 REDIRECT="> $CONFIG_DIR/heating.log 2>&1"
 SERVICE_NAME="Heating Control"
+set -x
 start() {
   if [ -f ${PID_FILE} ] && kill -0 $(cat ${PID_FILE}) 2> /dev/null; then
     /bin/echo 'Service already running' >&2
@@ -57,10 +58,26 @@ install() {
     echo "Creating heating files in $HEATING_DIR"
     mkdir -p $HEATING_DIR
     chown $RUN_AS:homeassistant "$HEATING_DIR"
+
+    # Switches
     echo 0 > $HEATING_DIR/electrical-heating-switch
     chown $RUN_AS:homeassistant "$HEATING_DIR/electrical-heating-switch"
+    chmod g+rw "$HEATING_DIR/electrical-heating-switch"
     echo 0 > $PI_HOME/heating/gas-heating-switch
     chown $RUN_AS:homeassistant "$HEATING_DIR/gas-heating-switch"
+    chmod g+rw "$HEATING_DIR/gas-heating-switch"
+    echo 0 > $PI_HOME/heating/cheap-electricity-heating
+    chown $RUN_AS:homeassistant "$HEATING_DIR/cheap-electricity-heating"
+    chmod g+rw "$HEATING_DIR/cheap-electricity-heating"
+
+    # Current must be same as desired until the sensor kicks in
+    echo 23 > $PI_HOME/heating/current-temperature
+    chown $RUN_AS:homeassistant "$HEATING_DIR/current-temperature"
+    chmod g+rw "$HEATING_DIR/current-temperature"
+    echo 23 > $PI_HOME/heating/desired-temperature
+    chown $RUN_AS:homeassistant "$HEATING_DIR/desired-temperature"
+    chmod g+rw "$HEATING_DIR/desired-temperature"
+
 
     echo "Creating a config dir $CONFIG_DIR"
     mkdir -p $CONFIG_DIR

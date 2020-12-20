@@ -3,14 +3,10 @@
 PI_HOME="/home/pi/"
 CODE_HOME="$PI_HOME/z-automation/"
 
-hassbian-config install razberry
 apt install nmap
 apt install libudev-dev
 apt install vim
-
-# z-wave
-wget -q -O - razberry.z-wave.me/install 14 | sudo bash
-sudo update-rc.d z-way-server remove
+apt install libjpeg-dev zlib1g-dev
 
 # Scripts
 pip3 install requests
@@ -26,7 +22,26 @@ update-rc.d relay-control-daemon defaults
 service relay-control-daemon install
 
 # Heating
-cp "$PI_HOME/z-automation/heating.sh" /etc/init.d/heating-daemon
+cp "$PI_HOME/z-automation/heating-daemon.sh" /etc/init.d/heating-daemon
 chmod +x /etc/init.d/heating-daemon
 update-rc.d heating-daemon defaults
 service heating-daemon install
+
+# Home assistant
+cp "$PI_HOME/z-automation/hass-daemon.sh" /etc/init.d/hass-daemon
+chmod +x /etc/init.d/hass-daemon
+update-rc.d hass-daemon defaults
+service hass-daemon install
+
+
+# Alarm
+mkdir "$PI_HOME/alarm"
+chown pi:homeassistant "$PI_HOME/alarm"
+sudo cp "$PI_HOME/z-automation/report-motion.sh" "$PI_HOME/alarm/"
+sudo chown pi:homeassistant "$PI_HOME/alarm/report-motion.sh"
+sudo echo 0 > "$PI_HOME/alarm/switch"
+chown pi:homeassistant "$PI_HOME/alarm/switch"
+chmod g+rw "$PI_HOME/alarm/switch"
+/bin/date +%s > "$PI_HOME/alarm/last_alarm"
+chown pi:homeassistant "$PI_HOME/alarm/last_alarm"
+chmod g+rw "$PI_HOME/alarm/last_alarm"
