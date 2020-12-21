@@ -26,7 +26,7 @@ def is_time_between(begin_time, end_time, check_time=None):
 
 def allowed_based_on_tarif():
     global only_on_cheap_electricty
-    return (not only_on_cheap_electricty) or is_time_between(time(0,1), time(6,0))
+    return (not only_on_cheap_electricty) or is_time_between(time(0,1), time(8,0))
 
 
 @contextmanager
