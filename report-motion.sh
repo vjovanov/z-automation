@@ -9,7 +9,9 @@ shift
 phone_numbers=( "$@" )
 FIRST_NUMBER=${phone_numbers[0]}
 [ -z "$FIRST_NUMBER"  ] && echo "Must specify at least one phone number after the key." && exit 1;
-if [[ ( "$ALARM_STATE" == 1 ) && "$SINCE_LAST_ALARM" -gt "3600" ]] ; then
+
+# this is also done in the UI, but just in case
+if [[ ( "$ALARM_STATE" == 1 ) && "$SINCE_LAST_ALARM" -gt "1800" ]] ; then
   echo $CURRENT_TIME > /home/pi/alarm/last_alarm
 
   for phone_number in "${phone_numbers[@]}"

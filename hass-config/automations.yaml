@@ -4,21 +4,107 @@
     entity_id: input_number.desired_temperature
   action:
     service: shell_command.set_desired_temperature
+  id: 981123f797774fcba6c1e4e777d04d3d
 - alias: run_set_current_temperature
   trigger:
     platform: state
     entity_id: sensor.living_room_multisensor_6_temperature
   action:
     service: shell_command.set_current_temperature
+  id: 48f05e5a6aa94b1ebce68d83b67f5f3c
 - alias: run_report_motion_living_room
   trigger:
     platform: state
     entity_id: sensor.living_room_multisensor_6_burglar
   action:
     service: shell_command.report_motion
-- alias: run_report_motion_living_room_basement
+  id: 0570cf58431648b09c71c744bd0df7e6
+- alias: run_report_motion_hallway_first_floor
   trigger:
     platform: state
-    entity_id: sensor.first_floor__multisensor_6_burglar
+    entity_id: sensor.hallway_first_floor_multisensor_6_burglar
   action:
     service: shell_command.report_motion
+  id: 0e2c6eed025f47f78df6f0b9388f60c6
+- id: '1608917985244'
+  alias: Motion when Alarm is On
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '8'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '7'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '6'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '5'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '4'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '3'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '2'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '1'
+  - platform: state
+    entity_id: sensor.dining_room_multisensor_6_burglar
+    to: '8'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '7'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '6'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '5'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '4'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '3'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '2'
+  - platform: state
+    entity_id: sensor.living_room_multisensor_6_burglar
+    to: '1'
+  condition:
+  - condition: state
+    entity_id: switch.alarm_switch
+    state: 'on'
+  action:
+  - service: shell_command.report_motion
+    data: {}
+  - device_id: 7e481bddc3c249daae4f1a070e932f7a
+    domain: mobile_app
+    type: notify
+    message: 'Detektovano je kretanje u kuci na Zlatiboru dok je alarm ukljucen! Proveriti
+      na sledecem linku da li je kretanje slucajno i ako nije pozovite policiju (tel:
+      192): http://212.200.76.10:26681/lovelace/alarm"'
+    title: Alarm na Zlatiboru
+  - delay: 00:30:00
+  - device_id: ab5572c9480c51a70c69729dcaa3f93c
+    domain: mobile_app
+    type: notify
+    message: 'Detektovano je kretanje u kuci na Zlatiboru dok je alarm ukljucen! Proveriti
+      na sledecem linku da li je kretanje slucajno i ako nije pozovite policiju (tel:
+      192): http://212.200.76.10:26681/lovelace/alarm"'
+    title: Alarm na Zlatiboru
+  - device_id: b9cc0e599bc12440da4577524df1413c
+    domain: mobile_app
+    type: notify
+    message: 'Detektovano je kretanje u kuci na Zlatiboru dok je alarm ukljucen! Proveriti
+      na sledecem linku da li je kretanje slucajno i ako nije pozovite policiju (tel:
+      192): http://212.200.76.10:26681/lovelace/alarm"'
+    title: Alarm na Zlatiboru
+  mode: single
