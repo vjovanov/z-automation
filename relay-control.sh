@@ -35,7 +35,7 @@ start() {
   chown $RUN_AS $PID_FILE
 
   /bin/echo 'Starting service…' >&2
-  local CMD="$PRE_EXEC $BINARY $FLAGS $REDIRECT;"
+  local CMD="while true; do $PRE_EXEC $BINARY $FLAGS $REDIRECT; sleep 1; done"
   /bin/su -c "$CMD" ${RUN_AS} &
   /bin/echo 'Service started' >&2
 }
