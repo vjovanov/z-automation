@@ -47,8 +47,14 @@ stop() {
     return 1
   fi
   /bin/echo 'Stopping service…' >&2
-  /bin/kill $(cat "$PID_FILE")
-  while ps -p $(cat "$PID_FILE") > /dev/null 2>&1; do sleep 1;done;
+  # Kill the while loop process
+  /bin/kill -TERM $(cat "$PID_FILE")
+  # Also kill any running binary processes
+  pkill -f "$BINARY $FLAGS"
+  # Wait for processes to terminate
+  while ps -p $(cat "$PID_FILE") > /dev/null 2>&1 || pgrep -f "$BINARY $FLAGS" > /dev/null; do
+    sleep 1
+  done
   /bin/echo 'Service stopped' >&2
 }
 
