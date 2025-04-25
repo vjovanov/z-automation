@@ -1,0 +1,17 @@
+[Unit]
+Description=Motion Reporting Service
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/alarm
+ExecStart=/bin/bash /home/pi/alarm/report-motion.sh %i
+Restart=always
+RestartSec=5s
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=report-motion
+
+[Install]
+WantedBy=multi-user.target

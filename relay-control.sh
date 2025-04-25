@@ -31,13 +31,12 @@ start() {
     return 1
   fi
 
-  /bin/echo "999999" > ${PID_FILE}
-  chown $RUN_AS $PID_FILE
-
   /bin/echo 'Starting service…' >&2
-  local CMD="$PRE_EXEC $BINARY $FLAGS $REDIRECT;"
+  local CMD="while true; do $PRE_EXEC $BINARY $FLAGS $REDIRECT; sleep 5; done"
   /bin/su -c "$CMD" ${RUN_AS} &
-  /bin/echo 'Service started' >&2
+  /bin/echo $! > ${PID_FILE}
+  chown $RUN_AS $PID_FILE
+  /bin/echo "Service started (PID $(cat ${PID_FILE}))" >&2
 }
 
 stop() {
@@ -46,8 +45,14 @@ stop() {
     return 1
   fi
   /bin/echo 'Stopping service…' >&2
-  /bin/kill $(cat "$PID_FILE")
-  while ps -p $(cat "$PID_FILE") > /dev/null 2>&1; do sleep 1;done;
+  # Kill the while loop process
+  /bin/kill -TERM $(cat "$PID_FILE")
+  # Also kill any running binary processes
+  pkill -f "$BINARY $FLAGS"
+  # Wait for processes to terminate
+  while ps -p $(cat "$PID_FILE") > /dev/null 2>&1 || pgrep -f "$BINARY $FLAGS" > /dev/null; do 
+    sleep 1
+  done
   /bin/echo 'Service stopped' >&2
 }
 
