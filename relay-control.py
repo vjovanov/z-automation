@@ -90,12 +90,16 @@ def main():
                     sys.stderr.write("Can't read state from the switch " + str(
                         relay) + ": expected a number 0 or 1. Found " + content + ". Keeping the previous state.\n")
 
-                # setting the relay state according to switch states
-                assert switches[relay] == 0 or switches[relay] == 1
+                # Validate switch state before writing to GPIO
+                if switches[relay] not in (0, 1):
+                    sys.stderr.write(f"Invalid switch state {switches[relay]} for relay {relay}. Skipping GPIO write.\n")
+                    continue
 
-                # make sure the pump is running if the heating is on
+                # Ensure pump is running if heating is on
                 if (relay == 1 or relay == 2) and switches[relay] == 1:
-                    assert switches[0] == 1
+                    if switches[0] != 1:
+                        sys.stderr.write(f"Heating relay {relay} activated but pump (relay 0) is off. Skipping GPIO write.\n")
+                        continue
 
                 GPIO.output(RELAY_GPIO_MAP[relay], switches[relay])
 
