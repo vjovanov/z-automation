@@ -127,14 +127,15 @@ rest_command:
     content_type: "application/x-www-form-urlencoded"
     payload: "recipients={{ recipient }}&originator=Zlatibor&body={{ body | urlencode }}"
 
-# Notification fan-out for the alarm. Seeded with a persistent notification so it
-# is always valid; add your phone after registering the HA Companion app, e.g.:
-#   - service: mobile_app_<your-device-name>
+# Notification fan-out for the alarm. persistent_notification is always valid;
+# mobile_app_vojin_s_pixel is the HA Companion app on the phone (push). Add more
+# phones after registering the app, e.g. `- service: mobile_app_<device-name>`.
 notify:
   - platform: group
     name: alarm_targets
     services:
       - service: persistent_notification
+      - service: mobile_app_vojin_s_pixel
 
 # ---- Text to speech ----
 tts:
