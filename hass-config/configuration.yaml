@@ -1,73 +1,43 @@
-# Configure a default setup of Home Assistant (frontend, api, etc)
+# Home Assistant configuration — Zlatibor
+#
+# Modernized 2026-07 for Home Assistant 2023.1.7 + Z-Wave JS.
+#
+# IMPORTANT: This file targets HA 2023.1.7 syntax on purpose — that is the last
+# HA release that runs on this Pi's Python 3.9. When migrating to a newer HA
+# (see README "Migrating to latest HA"), the `command_line` / `systemmonitor`
+# blocks below must move to their newer top-level formats.
+#
+# Z-Wave is handled by the `zwave_js` integration (config entry -> zwave-js-server
+# on ws://localhost:3000). There is intentionally NO `zwave:` YAML here anymore.
+# Heating is owned by the separate Go `heating-controller` (systemd, :8080); HA
+# only surfaces its web UI as a sidebar panel and does not control heating.
+
 default_config:
 
 homeassistant:
-  # Name of the location where Home Assistant is running
   name: Zlatibor
-
-  # Location required to calculate the time the sun rises and sets
   latitude: 43.7321
   longitude: 19.7054
-
-  # Impacts weather/sunrise data (altitude above sea level in meters)
   elevation: 981
-
-  # metric for Metric, imperial for Imperial
   unit_system: metric
-
-  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: Europe/Belgrade
+  customize: !include customize.yaml
 
-speedtestdotnet:
-  scan_interval:
-    minutes: 15
+# ---- Heating: surfaced from the Go heating-controller on :8080 ----
+panel_iframe:
+  heating:
+    title: Grejanje
+    icon: mdi:radiator
+    url: "http://10.92.0.2:8080"
 
-binary_sensor:
-  - platform: command_line
-    name: Heating service
-    command: '/bin/systemctl is-active heating-daemon'
-    payload_on: 'active'
-    payload_off: 'inactive'
-    scan_interval: 15
-  - platform: command_line
-    name: Relay service
-    command: '/bin/systemctl is-active relay-control-daemon'
-    payload_on: 'active'
-    payload_off: 'inactive'
-    scan_interval: 15
-  - platform: command_line
-    name: Heating water pump
-    command: '/bin/cat /home/pi/relays/0'
-    payload_on: '1'
-    payload_off: '0'
-    scan_interval: 15
-  - platform: command_line
-    name: Electrical heating
-    command: '/bin/cat /home/pi/relays/2'
-    payload_on: '1'
-    payload_off: '0'
-    scan_interval: 15
-  - platform: command_line
-    name: Gas heating
-    command: '/bin/cat /home/pi/relays/1'
-    payload_on: '1'
-    payload_off: '0'
-    scan_interval: 15
-  - platform: ping
-    name: Internet
-    host: 8.8.8.8
-    scan_interval: 
-      minutes: 1
-
+# ---- System monitoring ----
 sensor:
   - platform: systemmonitor
     resources:
       - type: disk_use_percent
       - type: disk_free
-      - type: disk_use
       - type: memory_free
       - type: memory_use_percent
-      - type: memory_use
       - type: load_1m
       - type: load_5m
       - type: last_boot
@@ -76,88 +46,53 @@ sensor:
   - platform: command_line
     name: Pi Uptime
     command: "uptime -p"
+    scan_interval: 300
   - platform: command_line
-    command: python3 -c "import requests; print(requests.get('https://pypi.python.org/pypi/homeassistant/json').json()['info']['version'])"
+    name: HA Current Version
+    command: "/srv/homeassistant/bin/hass --version"
+    scan_interval: 3600
+    command_timeout: 30
+  - platform: command_line
     name: HA Latest Release
+    command: >
+      /srv/homeassistant/bin/python3 -c "import requests;
+      print(requests.get('https://pypi.org/pypi/homeassistant/json').json()['info']['version'])"
     scan_interval: 3600
     command_timeout: 60
-  - platform: command_line
-    command: /srv/homeassistant/bin/hass --version
-    name: HA Current Version
-  - platform: google_wifi
-    host: 192.168.86.1
-    monitored_conditions:
-      - status
-      - uptime
-      - last_restart
-      - current_version
-      - new_version
-      - local_ip
 
-http:
-   server_port: !secret server_port
+binary_sensor:
+  - platform: ping
+    name: Internet
+    host: 8.8.8.8
+    scan_interval: 60
 
-zwave:
-   usb_path: /dev/ttyACM0
-   polling_interval: 30000
-   network_key: !secret zwave_key
+# ---- Alarm (HA-native; replaces the old /home/pi/alarm file + report-motion.sh) ----
+input_boolean:
+  alarm_armed:
+    name: Alarm
+    icon: mdi:security
 
-input_number:
-  desired_temperature:
-    icon: mdi:temperature-celsius
-    name: Desired Temperature
-    unit_of_measurement: "°C"
-    min: 16
-    max: 25
-    step: 1
+# SMS notifications via MessageBird (replaces report-motion.sh).
+# Fill messagebird_auth in secrets.yaml with: "AccessKey <your-key>"
+rest_command:
+  messagebird_sms:
+    url: "https://rest.messagebird.com/messages"
+    method: POST
+    headers:
+      Authorization: !secret messagebird_auth
+    content_type: "application/x-www-form-urlencoded"
+    payload: "recipients={{ recipient }}&originator=Zlatibor&body={{ body | urlencode }}"
 
-shell_command:
-  set_desired_temperature: /bin/bash -c "echo '{{ states.input_number.desired_temperature.state }}' > /home/pi/heating/desired-temperature"
-  set_current_temperature: /bin/bash -c "echo '{{ states.sensor.living_room_multisensor_6_temperature.state }}' > /home/pi/heating/current-temperature"
-  report_motion: !secret report_motion 
-switch:
-  platform: command_line
-  switches:
-    electrical_heating_switch:
-      command_on: "echo 1 > /home/pi/heating/electrical-heating-switch"
-      command_off: "echo 0 > /home/pi/heating/electrical-heating-switch"
-      command_state: "cat /home/pi/heating/electrical-heating-switch"
-      value_template: '{{ value == "1" }}'
-      friendly_name: Electrical Heating
-    gas_heating_switch:
-      command_on: "echo 1 > /home/pi/heating/gas-heating-switch"
-      command_off: "echo 0 > /home/pi/heating/gas-heating-switch"
-      command_state: "cat /home/pi/heating/gas-heating-switch"
-      value_template: '{{ value == "1" }}'
-      friendly_name: Oil Heating
-    cheap_electricity_heating_switch:
-      command_on: "echo 1 > /home/pi/heating/cheap-electricity-heating"
-      command_off: "echo 0 > /home/pi/heating/cheap-electricity-heating"
-      command_state: "cat /home/pi/heating/cheap-electricity-heating"
-      value_template: '{{ value == "1" }}'
-      friendly_name: Cheap Electricity Heating
-    alarm_switch:
-      command_on: "echo 1 > /home/pi/alarm/switch"
-      command_off: "echo 0 > /home/pi/alarm/switch"
-      command_state: "cat /home/pi/alarm/switch"
-      value_template: '{{ value == "1" }}'
-      friendly_name: Alarm
+# Notification fan-out for the alarm. Seeded with a persistent notification so it
+# is always valid; add your phone after registering the HA Companion app, e.g.:
+#   - service: mobile_app_<your-device-name>
+notify:
+  - platform: group
+    name: alarm_targets
+    services:
+      - service: persistent_notification
 
-panel_custom:
-  - name: zwave-graph-panel
-    url_path: zwave-graph
-    sidebar_title: Z-Wave Graph
-    sidebar_icon: mdi:z-wave
-    module_url: /local/zwavegraph3.js
-    config:
-      # ranker - pick one: network-simplex, tight-tree, longest-path
-      ranker: network-simplex
-      # edge_visibility - pick one: relevant, all
-      edge_visibility: relevant
-      # grouping - pick one: z-wave, ungrouped
-      grouping: z-wave
-
-# Text to speech
+# ---- Text to speech ----
 tts:
   - platform: google_translate
 

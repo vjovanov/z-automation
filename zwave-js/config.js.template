@@ -1,0 +1,20 @@
+// Z-Wave JS server driver config.
+// Deploy to /etc/zwave-js/config.js, owned by homeassistant, mode 600.
+// Generate fresh keys ONCE with: openssl rand -hex 16   (one per key below).
+// If you ever re-create these keys, securely-included (S0/S2) devices must be
+// re-paired; non-secure devices are unaffected.
+module.exports = {
+  securityKeys: {
+    S0_Legacy: "REPLACE_32_HEX_CHARS",
+    S2_Unauthenticated: "REPLACE_32_HEX_CHARS",
+    S2_Authenticated: "REPLACE_32_HEX_CHARS",
+    S2_AccessControl: "REPLACE_32_HEX_CHARS",
+  },
+  securityKeysLongRange: {
+    S2_Authenticated: "REPLACE_32_HEX_CHARS",
+    S2_AccessControl: "REPLACE_32_HEX_CHARS",
+  },
+  storage: {
+    cacheDir: "/var/lib/zwave-js/cache",
+  },
+};

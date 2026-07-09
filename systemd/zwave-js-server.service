@@ -1,0 +1,16 @@
+[Unit]
+Description=Z-Wave JS Server (Aeotec Z-Stick -> ws://localhost:3000)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=homeassistant
+Group=homeassistant
+# Stable by-id path survives replug/reboot; falls back to /dev/ttyACM0.
+ExecStart=/usr/bin/zwave-server /dev/serial/by-id/usb-0658_0200-if00 --config /etc/zwave-js/config.js --port 3000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

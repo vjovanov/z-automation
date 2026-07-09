@@ -1,109 +1,74 @@
-sensor.dark_sky_temperature:
-  friendly_name: Spoljna Temperatura
-switch.gas_heating:
-  icon: mdi:fire
-switch.alarm:
-  icon: mdi:security
-sensor.aeotec_zw100_multisensor_6_relative_humidity_4:
-  friendly_name: "Relativna vla\u017Enost"
-  icon: mdi:water-percent
-sensor.aeotec_zw100_multisensor_6_relative_humidity_5:
-  friendly_name: "Relativna vla\u017Enost"
-  icon: mdi:water-percent
-sensor.available_disk_space:
-  friendly_name: Slobodno mesto na disku
-  icon: mdi:harddisk
-sensor.available_phisical_memory:
-  friendly_name: "Slobodno fizi\u010Dke memorije"
-  icon: mdi:memory
-group.heating_control:
-  order: 1
-sun.sun:
-  friendly_name: Doba dana
-sensor.aeotec_zw095_home_energy_meter_gen5_power:
-  friendly_name: "Potro\u0161nja"
-sensor.google_wifi_uptime:
-  friendly_name: WiFi uptime
-sensor.pi_uptime:
-  friendly_name: Pi vreme rada
-  icon: mdi:timelapse
-sensor.aeotec_zw095_home_energy_meter_gen5_current:
+# Serbian friendly names for the live Z-Wave JS + system entities.
+# NOTE: the three MultiSensor 6 units are physically identical, so HA appends
+# _2/_3 to duplicate names. Which suffix maps to which room is not derivable
+# remotely — rename the *devices* in Settings -> Devices to per-room names when
+# convenient; that cascades to all their entities.
+
+# ---- Home Energy Meter Gen5 (aggregate / whole-house) ----
+sensor.home_energy_meter_gen5_electric_consumption_w:
+  friendly_name: Trenutna potrošnja
+sensor.home_energy_meter_gen5_electric_consumption_kwh:
+  friendly_name: Ukupna potrošnja
+sensor.home_energy_meter_gen5_electric_consumption_v:
+  friendly_name: Napon na mreži
+sensor.home_energy_meter_gen5_electric_consumption_a:
   friendly_name: Protok struje
-sensor.google_wifi_status:
-  friendly_name: WiFi verzija
-sensor.google_wifi_current_version:
-  friendly_name: WiFi trenutna verzija
-sensor.google_wifi_local_ip:
-  friendly_name: WiFi lokalna IP adresa
-sensor.google_wifi_last_restart:
-  friendly_name: WiFi Poslednji Restart
-sensor.google_wifi_new_version:
-  friendly_name: WiFi nova verzija
-sensor.aeotec_zw095_home_energy_meter_gen5_energy:
-  friendly_name: "Potro\u0161ena Energija"
+
+# ---- MultiSensor 6 (sensor 1) ----
+sensor.multisensor_6_air_temperature:
+  friendly_name: Temperatura
+sensor.multisensor_6_humidity:
+  friendly_name: Relativna vlažnost
+  icon: mdi:water-percent
+sensor.multisensor_6_illuminance:
+  friendly_name: Osvetljenost
+sensor.multisensor_6_ultraviolet:
+  friendly_name: UV zračenje
+binary_sensor.multisensor_6_motion_detection:
+  friendly_name: Detekcija pokreta
+
+# ---- MultiSensor 6 (sensor 2) ----
+sensor.multisensor_6_air_temperature_2:
+  friendly_name: Temperatura 2
+sensor.multisensor_6_humidity_2:
+  friendly_name: Relativna vlažnost 2
+  icon: mdi:water-percent
+sensor.multisensor_6_illuminance_2:
+  friendly_name: Osvetljenost 2
+sensor.multisensor_6_ultraviolet_2:
+  friendly_name: UV zračenje 2
+binary_sensor.multisensor_6_motion_detection_2:
+  friendly_name: Detekcija pokreta 2
+
+# ---- MultiSensor 6 (sensor 3 — appears once fully interviewed) ----
+sensor.multisensor_6_air_temperature_3:
+  friendly_name: Temperatura 3
+binary_sensor.multisensor_6_motion_detection_3:
+  friendly_name: Detekcija pokreta 3
+
+# ---- System / diagnostics ----
+sensor.processor_temperature:
+  friendly_name: Temperatura procesora
+sensor.processor_use:
+  friendly_name: Opterećenje procesora
+sensor.memory_use_percent:
+  friendly_name: Iskorišćenost memorije
+  icon: mdi:memory
+sensor.disk_use_percent:
+  friendly_name: Iskorišćenost diska
+  icon: mdi:harddisk
+sensor.last_boot:
+  friendly_name: Poslednje pokretanje
+sensor.pi_uptime:
+  friendly_name: Vreme rada
+  icon: mdi:timelapse
 sensor.ha_current_version:
   friendly_name: HA trenutna verzija
   icon: mdi:checkbox-marked-circle-outline
 sensor.ha_latest_release:
   friendly_name: HA najnovija verzija
   icon: mdi:update
-sensor.dark_sky_apparent_temperature:
-  friendly_name: "Subjektivni ose\u0107aj"
-sensor.dark_sky_cloud_coverage:
-  friendly_name: "Obla\u010Dnost"
-sensor.dark_sky_daily_high_temperature:
-  friendly_name: Maksimalna temperatura
-sensor.dark_sky_daily_low_temperature:
-  friendly_name: Minimalna temperatura
-sensor.dark_sky_humidity:
-  friendly_name: "Relativna vla\u017Enost"
-sensor.dark_sky_nearest_storm_distance:
-  friendly_name: "Udaljenost najbli\u017Ee oluje"
-sensor.dark_sky_precip_probability:
-  friendly_name: "Verovatno\u0107a padavina"
-sensor.dark_sky_precip:
-  friendly_name: Padavine
-sensor.dark_sky_pressure:
-  friendly_name: "Vazdu\u0161ni pritisak"
-sensor.dark_sky_summary:
-  friendly_name: Vreme
-sensor.dark_sky_wind_bearing:
-  friendly_name: Pravac vetra
-sensor.dark_sky_wind_speed:
-  friendly_name: Brzina vetra
-sensor.aeotec_zw095_home_energy_meter_gen5_previous_reading:
-  friendly_name: "Prethodno \u010Ditanje ukupne potro\u0161nje"
-sensor.aeotec_zw100_multisensor_6_alarm_level_5:
-  friendly_name: Nivo alarma
-sensor.dnevna_soba_suteren_ultraviolet:
-  friendly_name: "Ultraljubi\u010Dasto zra\u010Denje"
-sensor.aeotec_zw095_home_energy_meter_gen5_voltage:
-  friendly_name: Napon na mrezi
-sensor.aeotec_zw095_home_energy_meter_gen5_previous_reading_2:
-  friendly_name: "Prethodno o\u010Ditavanje energije"
-binary_sensor.dnevna_soba_suteren_sensor:
-  friendly_name: Binarni sensor prisustva
-sensor.aeotec_zw100_multisensor_6_alarm_type_5:
-  friendly_name: Tip alarma
-sensor.aeotec_zw100_multisensor_6_burglar_5:
-  friendly_name: Provala
-sensor.aeotec_zw100_multisensor_6_luminance_4:
-  friendly_name: Osvetljenost
-binary_sensor.dnevna_soba_sensor:
-  friendly_name: Binarni senzor prisustva
-sensor.aeotec_zw100_multisensor_6_alarm_level_4:
-  friendly_name: Nivo alarma
-sensor.aeotec_zw100_multisensor_6_alarm_type_4:
-  friendly_name: Tip alarma
-sensor.aeotec_zw100_multisensor_6_burglar_4:
-  friendly_name: Provala
-sensor.aeotec_zw100_multisensor_6_temperature_2:
-  friendly_name: Temperatura
-sensor.aeotec_zw100_multisensor_6_luminance_3:
-  friendly_name: Osvetljenost
-sensor.aeotec_zw100_multisensor_6_temperature_3:
-  friendly_name: Temperatura
-switch.electrical_heating:
-  friendly_name: "Elektri\u010Dno grejanje"
-sensor.cpu_temperature:
-  friendly_name: Temperatura procesora
+binary_sensor.internet:
+  friendly_name: Internet
+sun.sun:
+  friendly_name: Doba dana

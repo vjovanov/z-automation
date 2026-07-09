@@ -1,0 +1,18 @@
+# Real secrets never go in the repo (use hass-config/secrets.yaml.example).
+hass-config/secrets.yaml
+secrets.yaml
+
+# Live HA runtime state (deployed copy only).
+.storage/
+*.db
+*.db-*
+home-assistant.log*
+*.pid
+
+# Real Z-Wave JS keys / cache.
+zwave-js/config.js
+
+# Python / editor cruft.
+__pycache__/
+*.pyc
+*.swp
