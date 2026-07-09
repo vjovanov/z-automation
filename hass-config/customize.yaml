@@ -14,7 +14,12 @@ sensor.home_energy_meter_gen5_electric_consumption_v:
 sensor.home_energy_meter_gen5_electric_consumption_a:
   friendly_name: Protok struje
 
-# ---- MultiSensor 6 (sensor 1) ----
+# ---- MultiSensor 6 — LIVING ROOM (Z-Wave device fa80f461...) ----
+# Renamed at the DEVICE level to "Living Room", so all its entities display as
+# "Living Room <sensor>" (e.g. binary_sensor.multisensor_6_motion_detection_2 ->
+# "Living Room Motion detection"). Intentionally no per-entity overrides here.
+
+# ---- MultiSensor 6 — second unit (device 4231661f..., room TBD) ----
 sensor.multisensor_6_air_temperature:
   friendly_name: Temperatura
 sensor.multisensor_6_humidity:
@@ -22,29 +27,10 @@ sensor.multisensor_6_humidity:
   icon: mdi:water-percent
 sensor.multisensor_6_illuminance:
   friendly_name: Osvetljenost
-sensor.multisensor_6_ultraviolet:
+sensor.multisensor_6_ultraviolet_2:
   friendly_name: UV zračenje
 binary_sensor.multisensor_6_motion_detection:
   friendly_name: Detekcija pokreta
-
-# ---- MultiSensor 6 (sensor 2) ----
-sensor.multisensor_6_air_temperature_2:
-  friendly_name: Temperatura 2
-sensor.multisensor_6_humidity_2:
-  friendly_name: Relativna vlažnost 2
-  icon: mdi:water-percent
-sensor.multisensor_6_illuminance_2:
-  friendly_name: Osvetljenost 2
-sensor.multisensor_6_ultraviolet_2:
-  friendly_name: UV zračenje 2
-binary_sensor.multisensor_6_motion_detection_2:
-  friendly_name: Detekcija pokreta 2
-
-# ---- MultiSensor 6 (sensor 3 — appears once fully interviewed) ----
-sensor.multisensor_6_air_temperature_3:
-  friendly_name: Temperatura 3
-binary_sensor.multisensor_6_motion_detection_3:
-  friendly_name: Detekcija pokreta 3
 
 # ---- System / diagnostics ----
 sensor.processor_temperature:
