@@ -118,11 +118,29 @@ Pregled (weather + summary + heating), Kuća (per-room MultiSensors), Energija
 
 ## Install / provision
 
+`install.sh` is an **idempotent, end-to-end** provisioner (bare Debian 11 → working
+HA). It installs the system deps, the HA venv + Core, Node + zwave-js-server,
+generates the Z-Wave security keys if absent, deploys this config, installs the
+systemd units (HA, Z-Wave, daily backup), and injects the `zwave_js` / `met` /
+`speedtestdotnet` config entries. Re-running is safe — every mutating step skips if
+it is already done, so it never clobbers an existing network, user, keys, or secrets.
+
 ```
-sudo ./install.sh
+# minimal — onboarding (first admin user) done in the browser afterwards:
+sudo -v && ./install.sh
+
+# fully turnkey — also creates the admin login and skips onboarding:
+HA_PASS='your-password' HA_USER=vjovanov \
+  SITE_NAME=Zlatibor LAT=43.7321 LON=19.7054 ELEV=981 ./install.sh
 ```
-Then finish the printed manual steps (add the Z-Wave JS integration if missing,
-fill `secrets.yaml`, register the Companion app).
+
+Override `ZSTICK_DEV` if the Z-Stick enumerates at a different by-id path, or set
+`INJECT_ENTRIES=0` to add the integrations via the UI instead.
+
+Only genuinely-interactive steps remain (the script prints them): fill
+`secrets.yaml` (MessageBird key, phone, alarm URL); register the HA Companion app
+and add its `mobile_app_*` service to the `alarm_targets` group; and — on a fresh
+network — include and name the Z-Wave devices per room.
 
 ## Alarm
 
