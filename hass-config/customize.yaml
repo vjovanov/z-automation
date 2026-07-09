@@ -1,8 +1,9 @@
-# Serbian friendly names for the live Z-Wave JS + system entities.
-# NOTE: the three MultiSensor 6 units are physically identical, so HA appends
-# _2/_3 to duplicate names. Which suffix maps to which room is not derivable
-# remotely — rename the *devices* in Settings -> Devices to per-room names when
-# convenient; that cascades to all their entities.
+# Global friendly names (Serbian) for entities shown outside the dashboard.
+#
+# The three MultiSensor 6 units are named at the DEVICE level (Dnevna soba,
+# Dnevna soba suteren, Hodnik na spratu) so their entities inherit the room.
+# Per-sensor Serbian labels (Temperatura, Vlažnost, ...) are set in the room
+# cards in ui-lovelace.yaml, where the room provides context.
 
 # ---- Home Energy Meter Gen5 (aggregate / whole-house) ----
 sensor.home_energy_meter_gen5_electric_consumption_w:
@@ -13,24 +14,6 @@ sensor.home_energy_meter_gen5_electric_consumption_v:
   friendly_name: Napon na mreži
 sensor.home_energy_meter_gen5_electric_consumption_a:
   friendly_name: Protok struje
-
-# ---- MultiSensor 6 — LIVING ROOM (Z-Wave device fa80f461...) ----
-# Renamed at the DEVICE level to "Living Room", so all its entities display as
-# "Living Room <sensor>" (e.g. binary_sensor.multisensor_6_motion_detection_2 ->
-# "Living Room Motion detection"). Intentionally no per-entity overrides here.
-
-# ---- MultiSensor 6 — second unit (device 4231661f..., room TBD) ----
-sensor.multisensor_6_air_temperature:
-  friendly_name: Temperatura
-sensor.multisensor_6_humidity:
-  friendly_name: Relativna vlažnost
-  icon: mdi:water-percent
-sensor.multisensor_6_illuminance:
-  friendly_name: Osvetljenost
-sensor.multisensor_6_ultraviolet_2:
-  friendly_name: UV zračenje
-binary_sensor.multisensor_6_motion_detection:
-  friendly_name: Detekcija pokreta
 
 # ---- System / diagnostics ----
 sensor.processor_temperature:
@@ -56,5 +39,8 @@ sensor.ha_latest_release:
   icon: mdi:update
 binary_sensor.internet:
   friendly_name: Internet
+binary_sensor.grejanje_servis:
+  friendly_name: Grejanje (servis)
+  icon: mdi:radiator
 sun.sun:
   friendly_name: Doba dana

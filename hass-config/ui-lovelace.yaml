@@ -1,0 +1,162 @@
+# Zlatibor dashboard (Lovelace YAML mode — version controlled).
+# Recreates the original multi-view layout (Pregled / Kuća / Sistemi / Grafikoni),
+# modernized onto Z-Wave JS + Met.no entities.
+title: Zlatibor
+views:
+  - title: Pregled
+    path: pregled
+    icon: mdi:home
+    cards:
+      - type: weather-forecast
+        entity: weather.forecast_zlatibor
+        name: Vreme na Zlatiboru
+      - type: glance
+        title: Ukratko
+        entities:
+          - entity: sensor.spoljna_temperatura
+            name: Napolju
+          - entity: sensor.prosecna_temperatura
+            name: Prosek unutra
+          - entity: sensor.home_energy_meter_gen5_electric_consumption_w
+            name: Potrošnja
+          - entity: sun.sun
+            name: Doba dana
+      - type: entities
+        title: Alarm
+        entities:
+          - entity: input_boolean.alarm_armed
+            name: Alarm
+      - type: iframe
+        title: Grejanje
+        url: "http://10.92.0.2:8080"
+        aspect_ratio: 80%
+
+  - title: Kuća
+    path: kuca
+    icon: mdi:sofa
+    cards:
+      - type: entities
+        title: Dnevna soba
+        entities:
+          - entity: sensor.multisensor_6_air_temperature_2
+            name: Temperatura
+          - entity: sensor.multisensor_6_humidity_2
+            name: Vlažnost
+          - entity: sensor.multisensor_6_illuminance_2
+            name: Osvetljenost
+          - entity: sensor.multisensor_6_ultraviolet
+            name: UV
+          - entity: binary_sensor.multisensor_6_motion_detection_2
+            name: Pokret
+      - type: entities
+        title: Dnevna soba suteren
+        entities:
+          - entity: sensor.multisensor_6_air_temperature
+            name: Temperatura
+          - entity: sensor.multisensor_6_humidity
+            name: Vlažnost
+          - entity: sensor.multisensor_6_illuminance
+            name: Osvetljenost
+          - entity: sensor.multisensor_6_ultraviolet_2
+            name: UV
+          - entity: binary_sensor.multisensor_6_motion_detection
+            name: Pokret
+      - type: entities
+        title: Hodnik na spratu
+        # Populates once node 5 finishes interviewing (entity IDs may differ;
+        # they follow the same *_3 pattern as the other units).
+        entities:
+          - entity: sensor.multisensor_6_air_temperature_3
+            name: Temperatura
+          - entity: sensor.multisensor_6_humidity_3
+            name: Vlažnost
+          - entity: sensor.multisensor_6_illuminance_3
+            name: Osvetljenost
+          - entity: sensor.multisensor_6_ultraviolet_3
+            name: UV
+          - entity: binary_sensor.multisensor_6_motion_detection_3
+            name: Pokret
+
+  - title: Energija
+    path: energija
+    icon: mdi:flash
+    cards:
+      - type: entities
+        title: Potrošnja (ukupno)
+        entities:
+          - entity: sensor.home_energy_meter_gen5_electric_consumption_w
+            name: Trenutna snaga
+          - entity: sensor.home_energy_meter_gen5_electric_consumption_kwh
+            name: Ukupna energija
+          - entity: sensor.home_energy_meter_gen5_electric_consumption_v
+            name: Napon
+          - entity: sensor.home_energy_meter_gen5_electric_consumption_a
+            name: Struja
+      - type: history-graph
+        title: Potrošnja kroz vreme
+        hours_to_show: 48
+        entities:
+          - sensor.home_energy_meter_gen5_electric_consumption_w
+
+  - title: Sistemi
+    path: sistemi
+    icon: mdi:server
+    cards:
+      - type: entities
+        title: Alarm i grejanje
+        entities:
+          - entity: input_boolean.alarm_armed
+            name: Alarm
+          - entity: binary_sensor.grejanje_servis
+            name: Grejanje (servis)
+      - type: entities
+        title: Internet
+        entities:
+          - entity: binary_sensor.internet
+            name: Internet
+          - entity: sensor.speedtest_download
+            name: Download
+          - entity: sensor.speedtest_upload
+            name: Upload
+          - entity: sensor.speedtest_ping
+            name: Ping
+      - type: entities
+        title: Raspberry Pi
+        entities:
+          - entity: sensor.processor_temperature
+            name: Temperatura procesora
+          - entity: sensor.processor_use
+            name: Procesor
+          - entity: sensor.memory_use_percent
+            name: Memorija
+          - entity: sensor.disk_use_percent
+            name: Disk
+          - entity: sensor.pi_uptime
+            name: Vreme rada
+          - entity: sensor.ha_current_version
+            name: HA verzija
+          - entity: sensor.ha_latest_release
+            name: HA najnovija verzija
+
+  - title: Grafikoni
+    path: grafikoni
+    icon: mdi:chart-line
+    cards:
+      - type: history-graph
+        title: Temperatura
+        hours_to_show: 48
+        entities:
+          - entity: sensor.multisensor_6_air_temperature_2
+            name: Dnevna soba
+          - entity: sensor.multisensor_6_air_temperature
+            name: Suteren
+          - entity: sensor.spoljna_temperatura
+            name: Napolju
+      - type: history-graph
+        title: Vlažnost
+        hours_to_show: 48
+        entities:
+          - entity: sensor.multisensor_6_humidity_2
+            name: Dnevna soba
+          - entity: sensor.multisensor_6_humidity
+            name: Suteren

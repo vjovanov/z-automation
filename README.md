@@ -23,7 +23,8 @@ UI via the *Grejanje* sidebar panel. Do not manage the heating-controller from h
 
 ```
 hass-config/            # deployed to /home/homeassistant/.homeassistant/
-  configuration.yaml    # main config (Z-Wave JS, system sensors, alarm, heating panel)
+  configuration.yaml    # main config (Z-Wave JS, system + template sensors, alarm, heating)
+  ui-lovelace.yaml      # dashboard (Lovelace YAML mode): Pregled/Kuća/Energija/Sistemi/Grafikoni
   customize.yaml        # Serbian friendly names for the live entities
   automations.yaml      # alarm / motion automations
   groups|scripts|scenes.yaml
@@ -34,6 +35,15 @@ install.sh              # provision the whole stack
 upgrade-hass.sh         # HA upgrade notes (Python 3.9 ceiling)
 legacy/                 # retired heating/relay/alarm scripts (see legacy/README.md)
 ```
+
+## Dashboard
+
+Lovelace runs in **YAML mode** (`ui-lovelace.yaml`, version-controlled). Views:
+Pregled (weather + summary + heating), Kuća (per-room MultiSensors), Energija
+(energy meter), Sistemi (alarm, heating service, internet/speedtest, Pi), Grafikoni
+(history). Editing is via the file, not the UI. Weather comes from **Met.no**, with
+`Spoljna temperatura/vlažnost`, `Vazdušni pritisak`, `Brzina vetra`, and
+`Prosečna temperatura` provided as `template:` sensors.
 
 ## Access
 

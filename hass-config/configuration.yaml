@@ -10,7 +10,7 @@
 # Z-Wave is handled by the `zwave_js` integration (config entry -> zwave-js-server
 # on ws://localhost:3000). There is intentionally NO `zwave:` YAML here anymore.
 # Heating is owned by the separate Go `heating-controller` (systemd, :8080); HA
-# only surfaces its web UI as a sidebar panel and does not control heating.
+# only surfaces its web UI / service health and does not control heating.
 
 default_config:
 
@@ -22,6 +22,10 @@ homeassistant:
   unit_system: metric
   time_zone: Europe/Belgrade
   customize: !include customize.yaml
+
+# Version-controlled dashboard (see ui-lovelace.yaml).
+lovelace:
+  mode: yaml
 
 # ---- Heating: surfaced from the Go heating-controller on :8080 ----
 panel_iframe:
@@ -65,6 +69,46 @@ binary_sensor:
     name: Internet
     host: 8.8.8.8
     scan_interval: 60
+  - platform: command_line
+    name: Grejanje servis
+    command: "/bin/systemctl is-active heating-controller"
+    payload_on: "active"
+    payload_off: "inactive"
+    scan_interval: 30
+
+# ---- Derived / outdoor sensors (replace the retired dark_sky sensors) ----
+template:
+  - sensor:
+      - name: "Spoljna temperatura"
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state: "{{ state_attr('weather.forecast_zlatibor','temperature') }}"
+      - name: "Spoljna vlažnost"
+        unit_of_measurement: "%"
+        device_class: humidity
+        state: "{{ state_attr('weather.forecast_zlatibor','humidity') }}"
+      - name: "Vazdušni pritisak"
+        unit_of_measurement: "hPa"
+        device_class: pressure
+        state: "{{ state_attr('weather.forecast_zlatibor','pressure') }}"
+      - name: "Brzina vetra"
+        unit_of_measurement: "km/h"
+        state: "{{ state_attr('weather.forecast_zlatibor','wind_speed') }}"
+      - name: "Prosečna temperatura"
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state: >
+          {% set ns = namespace(vals=[]) %}
+          {% for e in [
+              'sensor.multisensor_6_air_temperature',
+              'sensor.multisensor_6_air_temperature_2',
+              'sensor.multisensor_6_air_temperature_3'] %}
+            {% set v = states(e) %}
+            {% if v not in ['unknown','unavailable','none',''] %}
+              {% set ns.vals = ns.vals + [v | float] %}
+            {% endif %}
+          {% endfor %}
+          {{ (ns.vals | sum / ns.vals | length) | round(1) if ns.vals | length > 0 else 'unavailable' }}
 
 # ---- Alarm (HA-native; replaces the old /home/pi/alarm file + report-motion.sh) ----
 input_boolean:
