@@ -63,8 +63,7 @@ views:
             name: Pokret
       - type: entities
         title: Hodnik na spratu
-        # Populates once node 5 finishes interviewing (entity IDs may differ;
-        # they follow the same *_3 pattern as the other units).
+        # MultiSensor 6 node 10 (re-included 2026-07; the *_3 entity set).
         entities:
           - entity: sensor.multisensor_6_air_temperature_3
             name: Temperatura

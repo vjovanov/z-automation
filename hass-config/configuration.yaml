@@ -27,6 +27,26 @@ homeassistant:
 lovelace:
   mode: yaml
 
+# ---- Recorder: keep history modest and cut disk writes on the Pi ----
+# Default purges at 10 days; we set 14 and batch commits every 30 s. Excluded
+# entities still work live (current state), they just are not kept in history.
+recorder:
+  purge_keep_days: 14
+  commit_interval: 30
+  exclude:
+    entities:
+      - sensor.ha_current_version
+      - sensor.ha_latest_release
+      - sensor.pi_uptime
+      - sensor.last_boot
+      - sensor.load_1m
+      - sensor.load_5m
+      - sensor.memory_free
+      - sensor.disk_free
+    entity_globs:
+      - sensor.*_node_status*
+      - binary_sensor.multisensor_6_tampering*
+
 # ---- Heating: surfaced from the Go heating-controller on :8080 ----
 panel_iframe:
   heating:

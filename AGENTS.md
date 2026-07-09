@@ -63,6 +63,9 @@ schema: `entry_id`, `version`, `domain`, `title`, `data`, `options`, `source`,
 Set `name_by_user` in `.storage/core.device_registry` (device) or
 `.storage/core.entity_registry` (entity). **Stop HA, edit, start.** zwave_js entities
 use `has_entity_name`, so a device rename cascades to all its entities.
+**Caution:** rename a freshly-included device only *after* all its values exist. A
+value discovered later (e.g. humidity) gets an `entity_id` derived from the *current*
+device name, breaking the `…_N` convention — you then have to rename that entity by hand.
 
 ## Z-Wave operations
 
@@ -74,6 +77,12 @@ EOF
 (See git history for the small `ws` dump scripts.) Re-interview a node:
 `{command:"node.refresh_info", nodeId:<n>}`. Battery nodes (the MultiSensors)
 interview only while awake — press the unit's action button to wake it.
+
+**Do not `config_entries/reload` the `zwave_js` entry on this stack.** The old
+`zwave-js-server-python` (0.44) against the server's schema throws a `ReadyEventModel`
+validation error and the reload fails. To pick up values/entities discovered after
+the initial interview (e.g. a MultiSensor humidity reading that arrived late),
+**restart HA** instead.
 
 ## Git / push
 

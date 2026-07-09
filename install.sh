@@ -56,17 +56,21 @@ fi
 echo "==> systemd units"
 sudo cp "${REPO}/systemd/home-assistant@.service" /etc/systemd/system/
 sudo cp "${REPO}/systemd/zwave-js-server.service" /etc/systemd/system/
+sudo cp "${REPO}/systemd/zauto-backup.service" "${REPO}/systemd/zauto-backup.timer" /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now zwave-js-server.service
-sudo systemctl enable --now home-assistant@homeassistant.service
 
-echo "==> Deploy HA config"
+echo "==> Deploy HA config (before first HA start, so it never boots on defaults)"
 sudo -u homeassistant mkdir -p /home/homeassistant/.homeassistant
 sudo cp "${REPO}"/hass-config/*.yaml /home/homeassistant/.homeassistant/
 [ -f /home/homeassistant/.homeassistant/secrets.yaml ] || \
   sudo -u homeassistant cp "${REPO}/hass-config/secrets.yaml.example" \
       /home/homeassistant/.homeassistant/secrets.yaml
 sudo chown -R homeassistant:homeassistant /home/homeassistant/.homeassistant
+
+echo "==> Start Home Assistant + daily backup timer"
+sudo systemctl enable --now home-assistant@homeassistant.service
+sudo systemctl enable --now zauto-backup.timer
 
 echo "==> Validate + restart"
 sudo -u homeassistant /srv/homeassistant/bin/hass \

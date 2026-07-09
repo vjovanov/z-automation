@@ -1,0 +1,10 @@
+[Unit]
+Description=Zlatibor state backup (.storage + Z-Wave cache/keys + secrets)
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Runs as root so it can read .storage and /etc/zwave-js/config.js.
+ExecStart=/home/pi/c/z-automation/zauto-backup.sh
+Nice=10
+IOSchedulingClass=idle

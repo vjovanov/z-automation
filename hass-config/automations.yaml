@@ -15,6 +15,10 @@
     - condition: state
       entity_id: input_boolean.alarm_armed
       state: "on"
+    # Exit delay: ignore motion for the first 60 s after arming (time to leave).
+    - condition: template
+      value_template: >-
+        {{ (now() - states.input_boolean.alarm_armed.last_changed).total_seconds() > 60 }}
     # Throttle: fire at most once per 30 minutes.
     - condition: template
       value_template: >-
@@ -40,6 +44,7 @@
       entity_id:
         - binary_sensor.multisensor_6_motion_detection
         - binary_sensor.multisensor_6_motion_detection_2
+        - binary_sensor.multisensor_6_motion_detection_3
       to: "off"
       for: "48:00:00"
   condition:
@@ -52,3 +57,23 @@
       data:
         title: "Podsetnik za alarm na Zlatiboru"
         message: !secret alarm_reminder_message
+
+- id: alarm_arm_disarm_confirmation
+  alias: Alarm - arm/disarm confirmation
+  mode: queued
+  trigger:
+    - platform: state
+      entity_id: input_boolean.alarm_armed
+      to: ["on", "off"]
+  condition:
+    # Skip the restore-on-restart transition (from unknown/unavailable).
+    - condition: template
+      value_template: "{{ trigger.from_state.state in ['on', 'off'] }}"
+  action:
+    - service: notify.alarm_targets
+      continue_on_error: true
+      data:
+        title: "Alarm na Zlatiboru"
+        message: >-
+          {{ 'Alarm je UKLJUČEN.' if is_state('input_boolean.alarm_armed', 'on')
+             else 'Alarm je ISKLJUČEN.' }}

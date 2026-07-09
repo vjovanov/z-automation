@@ -42,10 +42,9 @@ Controller: Aeotec Z-Stick Gen5 at `/dev/serial/by-id/usb-0658_0200-if00`
 | 1 | Z-Stick Gen5 controller | `d8ff5eca` | — |
 | 3 | MultiSensor 6 | `4231661f` | **Dnevna soba suteren** |
 | 4 | MultiSensor 6 | `fa80f461` | **Dnevna soba** |
-| 5 | MultiSensor 6 | `f8d74a7a` | **Hodnik na spratu** |
 | 6 | Home Energy Meter Gen5 | `08539146` | whole-house power |
-| 7 | (unknown) | `4e0aa27e` | **dead** — needs physical attention |
 | 9 | TKB dual-paddle switch | `af3c7a38` | wall switch |
+| 10 | MultiSensor 6 | `3b6e2c81` | **Hodnik na spratu** (re-included 2026-07; was node 5) |
 
 Rooms are set as **device names** (`name_by_user` in the device registry), so each
 unit's entities inherit the room. Security keys live in `/etc/zwave-js/config.js`
@@ -62,9 +61,10 @@ consistent across sensor types, so they are pinned down here.
 |------|--------|------|----------|-------------|----|--------|
 | Dnevna soba suteren | `4231661f` | `_air_temperature` | `_humidity` | `_illuminance` | `_ultraviolet_2` | `binary…_motion_detection` |
 | Dnevna soba | `fa80f461` | `_air_temperature_2` | `_humidity_2` | `_illuminance_2` | `_ultraviolet` | `binary…_motion_detection_2` |
-| Hodnik na spratu | `f8d74a7a` | `_air_temperature_3` * | `_humidity_3` * | `_illuminance_3` * | `_ultraviolet_3` * | `binary…_motion_detection_3` * |
+| Hodnik na spratu | `3b6e2c81` | `_air_temperature_3` | `_humidity_3` | `_illuminance_3` | `_ultraviolet_3` | `binary…_motion_detection_3` |
 
-\* appear once node 5 completes its interview (see AGENTS.md → "Z-Wave operations").
+(Status/ping helper entities for node 10 are `sensor.multisensor_6_node_status_3` /
+`button.multisensor_6_ping_3`.)
 
 **Home Energy Meter Gen5** (`08539146`) — aggregate + three clamps, each with W/kWh/V/A
 (all prefixed `sensor.home_energy_meter_gen5_electric_consumption`):
@@ -135,8 +135,14 @@ fill `secrets.yaml`, register the Companion app).
 
 ## Backups
 
-Pre-change config snapshots are kept at `/home/homeassistant/ha-backup-<timestamp>/`
-(includes `.storage`). Take one before risky edits.
+A **daily** backup of the critical non-git state (`.storage`, the Z-Wave JS cache,
+`/etc/zwave-js/config.js`, `secrets.yaml`) runs via the `zauto-backup.timer` systemd
+timer (`zauto-backup.sh` → `/home/pi/zauto-backups/`, 14 rotations kept). These
+archives contain secrets and are mode 600. For real disaster recovery, copy them
+off-box (see the REMOTE_COPY hook in `zauto-backup.sh`).
+
+Pre-change config snapshots are also kept ad-hoc at
+`/home/homeassistant/ha-backup-<timestamp>/`. Take one before risky edits.
 
 ## Migrating to latest HA
 
@@ -150,4 +156,7 @@ Blocker: current HA needs Python 3.12+, absent from Debian 11. Options:
    HA, move the config, move the Z-Stick.
 
 After upgrading, migrate the `command_line`/`systemmonitor` blocks to their current
-top-level formats.
+top-level formats. Also note: the `Spoljna temperatura/vlažnost`, `Vazdušni pritisak`
+and `Brzina vetra` template sensors read `state_attr('weather.forecast_zlatibor', …)`.
+Newer HA removed `humidity`/`pressure`/`wind_speed` as weather-entity attributes (they
+moved to the `weather.get_forecasts` service), so those templates must be reworked.
