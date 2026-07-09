@@ -51,6 +51,33 @@ Rooms are set as **device names** (`name_by_user` in the device registry), so ea
 unit's entities inherit the room. Security keys live in `/etc/zwave-js/config.js`
 (mode 600, gitignored); re-generating them forces re-pairing of secure devices.
 
+### Device → entity map
+
+The `_2` / `_3` suffixes are assigned by HA in interview order and are **not**
+consistent across sensor types, so they are pinned down here.
+
+**MultiSensor 6 units** (all entity IDs prefixed `…multisensor_6`):
+
+| Room | Device | Temp | Humidity | Illuminance | UV | Motion |
+|------|--------|------|----------|-------------|----|--------|
+| Dnevna soba suteren | `4231661f` | `_air_temperature` | `_humidity` | `_illuminance` | `_ultraviolet_2` | `binary…_motion_detection` |
+| Dnevna soba | `fa80f461` | `_air_temperature_2` | `_humidity_2` | `_illuminance_2` | `_ultraviolet` | `binary…_motion_detection_2` |
+| Hodnik na spratu | `f8d74a7a` | `_air_temperature_3` * | `_humidity_3` * | `_illuminance_3` * | `_ultraviolet_3` * | `binary…_motion_detection_3` * |
+
+\* appear once node 5 completes its interview (see AGENTS.md → "Z-Wave operations").
+
+**Home Energy Meter Gen5** (`08539146`) — aggregate + three clamps, each with W/kWh/V/A
+(all prefixed `sensor.home_energy_meter_gen5_electric_consumption`):
+
+| Reading | Whole-house | Clamp 1 | Clamp 2 | Clamp 3 |
+|---------|-------------|---------|---------|---------|
+| Power (W) | `_w` | `_w_2` | `_w_2_2` | `_w_3` |
+| Energy (kWh) | `_kwh` | `_kwh_2` | `_kwh_2_2` | `_kwh_3` |
+| Voltage (V) | `_v` | `_v_2` | `_v_2_2` | `_v_3` |
+| Current (A) | `_a` | `_a_2` | `_a_2_2` | `_a_3` |
+
+**Dual Paddle Wall Switch** (`af3c7a38`) — `switch.dual_paddle_wall_switch`.
+
 ## Layout
 
 ```
